@@ -1,0 +1,131 @@
+{{define "home"}}{{template "base" .}}{{end}}
+
+{{define "content"}}
+<section class="hero hero-home reveal">
+  <div class="hero-copy">
+    <p class="eyebrow">Web / Design / Cover Art</p>
+    <h1>Суперстильный сайт-студия с отдельными страницами под сайты и дизайн.</h1>
+    <p class="hero-text">
+      Здесь уже собрана современная структура с glassmorphism-навигацией, сильной типографикой
+      и цветными блоками под будущие изображения. Когда картинки появятся, ты просто заменишь плейсхолдеры.
+    </p>
+
+    <div class="hero-actions">
+      <a class="button button-primary" href="/websites">Страница сайтов</a>
+      <a class="button button-secondary" href="/design">Страница дизайна</a>
+    </div>
+
+    <div class="stats-row">
+      {{range .HeroStats}}
+      <article class="stat-pill">
+        <strong>{{.Value}}</strong>
+        <span>{{.Label}}</span>
+      </article>
+      {{end}}
+    </div>
+  </div>
+
+  <div class="hero-stage">
+    <div class="display-shell">
+      <div class="display-screen tone-neutral">
+        <span class="display-label">future visuals</span>
+        <h2>Блоки под кейсы уже выглядят как art direction.</h2>
+        <div class="display-stack">
+          <div class="display-strip tone-cyan"></div>
+          <div class="display-strip tone-lime"></div>
+          <div class="display-strip tone-coral"></div>
+        </div>
+      </div>
+
+      {{range .Tracks}}
+      <a class="floating-route {{.Accent}}" href="{{.Href}}">
+        <span>{{.Label}}</span>
+        <strong>{{.Title}}</strong>
+      </a>
+      {{end}}
+    </div>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Навигация по направлениям</p>
+      <h2>Две отдельные страницы, чтобы сайт сразу выглядел серьезно и структурно.</h2>
+    </div>
+    <p class="section-copy">Каждое направление оформлено как самостоятельная витрина, а не как случайный блок внутри лендинга.</p>
+  </div>
+
+  <div class="route-grid">
+    {{range .Tracks}}
+    <a class="route-card {{.Accent}}" href="{{.Href}}">
+      <span class="card-label">{{.Label}}</span>
+      <h3>{{.Title}}</h3>
+      <p>{{.Text}}</p>
+      <div class="chip-row">
+        {{range .Chips}}
+        <span>{{.}}</span>
+        {{end}}
+      </div>
+      <span class="route-link">Открыть страницу</span>
+    </a>
+    {{end}}
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Плейсхолдеры под картинки</p>
+      <h2>Сетка уже готова под будущие материалы, кейсы и визуалы.</h2>
+    </div>
+    <p class="section-copy">Пока вместо изображений используются цветовые панели и стеклянные заливки, чтобы сайт выглядел завершенным уже сейчас.</p>
+  </div>
+
+  <div class="gallery-grid">
+    {{range .Gallery}}
+    <article class="placeholder-card {{.Class}}">
+      <div class="placeholder-copy">
+        <span class="card-label">{{.Label}}</span>
+        <h3>{{.Title}}</h3>
+      </div>
+      <p>{{.Text}}</p>
+    </article>
+    {{end}}
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Как дальше наполнять</p>
+      <h2>Структура уже рассчитана на спокойное добавление картинок позже.</h2>
+    </div>
+  </div>
+
+  <div class="process-grid">
+    {{range .Process}}
+    <article class="process-card">
+      <span>{{.Number}}</span>
+      <h3>{{.Title}}</h3>
+      <p>{{.Text}}</p>
+    </article>
+    {{end}}
+  </div>
+</section>
+
+<section class="contact-shell reveal">
+  <div class="contact-card">
+    <p class="eyebrow">Следующий шаг</p>
+    <h2>Когда будешь готов, добавим реальные кейсы, картинки и анимации поверх этой основы.</h2>
+    <p class="section-copy">
+      Сейчас сайт уже оформлен как современная студия. Позже можно спокойно расширить его галереями,
+      карточками проектов и настоящими изображениями без ломки структуры.
+    </p>
+    <div class="hero-actions">
+      <a class="button button-primary" href="/websites">Перейти к сайтам</a>
+      <a class="button button-secondary" href="/design">Перейти к дизайну</a>
+    </div>
+  </div>
+</section>
+{{end}}

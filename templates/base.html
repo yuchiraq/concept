@@ -1,0 +1,52 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{.MetaTitle}}</title>
+  <meta name="description" content="{{.MetaDescription}}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="{{.PageClass}}">
+  <div class="site-shell">
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+    <div class="ambient ambient-c"></div>
+
+    <header class="topbar reveal">
+      <a class="brand" href="/">
+        <span class="brand-mark">N/A</span>
+        <span class="brand-copy">
+          <strong>Noise Atelier</strong>
+          <span>glass digital studio</span>
+        </span>
+      </a>
+
+      <nav class="topnav" aria-label="Основная навигация">
+        {{range .Nav}}
+        <a class="nav-link{{if eq $.ActivePath .Href}} is-active{{end}}" href="{{.Href}}">{{.Label}}</a>
+        {{end}}
+      </nav>
+
+      <a class="topbar-cta" href="mailto:hello@noiseatelier.dev">hello@noiseatelier.dev</a>
+    </header>
+
+    <main>
+      {{template "content" .}}
+    </main>
+
+    <footer class="footer">
+      <span>Noise Atelier</span>
+      <span>Go on :8089</span>
+      <span>{{.Year}}</span>
+    </footer>
+  </div>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
+{{end}}

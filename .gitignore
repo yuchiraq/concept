@@ -1,0 +1,23 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local tools and temporary downloads
+.tools/
+*.log
+*.tmp
+
+# Go build artifacts
+bin/
+build/
+dist/
+coverage.out
+*.test
+*.out
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib

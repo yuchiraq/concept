@@ -1,0 +1,125 @@
+{{define "service"}}{{template "base" .}}{{end}}
+
+{{define "content"}}
+<section class="hero reveal">
+  <div class="hero-copy">
+    <p class="eyebrow">{{.Eyebrow}}</p>
+    <h1>{{.HeroTitle}}</h1>
+    <p class="hero-text">{{.HeroText}}</p>
+
+    <div class="hero-actions">
+      <a class="button button-primary" href="{{.PrimaryHref}}">{{.PrimaryLabel}}</a>
+      <a class="button button-secondary" href="{{.SecondaryHref}}">{{.SecondaryLabel}}</a>
+    </div>
+
+    <div class="stats-row">
+      {{range .HeroStats}}
+      <article class="stat-pill">
+        <strong>{{.Value}}</strong>
+        <span>{{.Label}}</span>
+      </article>
+      {{end}}
+    </div>
+  </div>
+
+  <div class="hero-stage">
+    <div class="display-shell">
+      <div class="display-screen {{.DisplayClass}}">
+        <span class="display-label">future image slot</span>
+        <h2>{{.DisplayTitle}}</h2>
+        <div class="display-stack">
+          <div class="display-strip tone-neutral"></div>
+          <div class="display-strip tone-ice"></div>
+          <div class="display-strip tone-sunset"></div>
+        </div>
+      </div>
+
+      {{range .HeroStats}}
+      <article class="floating-stat">
+        <strong>{{.Value}}</strong>
+        <span>{{.Label}}</span>
+      </article>
+      {{end}}
+    </div>
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Что входит</p>
+      <h2>Сильная структура, современный визуал и готовые зоны под будущий контент.</h2>
+    </div>
+  </div>
+
+  <div class="capability-grid">
+    {{range .Capabilities}}
+    <article class="capability-card">
+      <span class="card-label">{{.Label}}</span>
+      <h3>{{.Title}}</h3>
+      <p>{{.Text}}</p>
+    </article>
+    {{end}}
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Блоки под изображения</p>
+      <h2>Пока здесь красивые заливки, потом сюда встанут реальные картинки и кейсы.</h2>
+    </div>
+    <p class="section-copy">Каждый блок уже оформлен как самостоятельный кадр, поэтому сайт не выглядит пустым даже без изображений.</p>
+  </div>
+
+  <div class="gallery-grid">
+    {{range .Gallery}}
+    <article class="placeholder-card {{.Class}}">
+      <div class="placeholder-copy">
+        <span class="card-label">{{.Label}}</span>
+        <h3>{{.Title}}</h3>
+      </div>
+      <p>{{.Text}}</p>
+    </article>
+    {{end}}
+  </div>
+</section>
+
+<section class="section reveal">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">Процесс</p>
+      <h2>Все устроено так, чтобы ты спокойно наполнял сайт по мере появления материалов.</h2>
+    </div>
+  </div>
+
+  <div class="process-grid">
+    {{range .Process}}
+    <article class="process-card">
+      <span>{{.Number}}</span>
+      <h3>{{.Title}}</h3>
+      <p>{{.Text}}</p>
+    </article>
+    {{end}}
+  </div>
+</section>
+
+<section class="contact-shell reveal">
+  <div class="contact-card">
+    <p class="eyebrow">Финальный блок</p>
+    <h2>{{.ClosingTitle}}</h2>
+    <p class="section-copy">{{.ClosingText}}</p>
+
+    <div class="chip-row">
+      {{range .ClosingPoints}}
+      <span>{{.}}</span>
+      {{end}}
+    </div>
+
+    <div class="hero-actions">
+      <a class="button button-primary" href="{{.PrimaryHref}}">{{.PrimaryLabel}}</a>
+      <a class="button button-secondary" href="{{.SecondaryHref}}">{{.SecondaryLabel}}</a>
+    </div>
+  </div>
+</section>
+{{end}}
