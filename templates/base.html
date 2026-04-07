@@ -17,7 +17,7 @@
     <div class="ambient ambient-b"></div>
     <div class="ambient ambient-c"></div>
 
-    <header class="topbar reveal">
+    <header class="topbar reveal" data-mobile-nav>
       <a class="brand" href="/">
         <span class="brand-mark">N/A</span>
         <span class="brand-copy">
@@ -26,13 +26,26 @@
         </span>
       </a>
 
-      <nav class="topnav" aria-label="Основная навигация">
-        {{range .Nav}}
-        <a class="nav-link{{if eq $.ActivePath .Href}} is-active{{end}}" href="{{.Href}}">{{.Label}}</a>
-        {{end}}
-      </nav>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav-panel"
+        aria-label="Открыть навигацию"
+      >
+        <span></span>
+        <span></span>
+      </button>
 
-      <a class="topbar-cta" href="mailto:hello@noiseatelier.dev">hello@noiseatelier.dev</a>
+      <div class="topbar-panel" id="site-nav-panel">
+        <nav class="topnav" aria-label="Основная навигация">
+          {{range .Nav}}
+          <a class="nav-link{{if eq $.ActivePath .Href}} is-active{{end}}" href="{{.Href}}">{{.Label}}</a>
+          {{end}}
+        </nav>
+
+        <a class="topbar-cta" href="mailto:hello@noiseatelier.dev">hello@noiseatelier.dev</a>
+      </div>
     </header>
 
     <main>
