@@ -1,5 +1,3 @@
-document.documentElement.classList.add("has-js");
-
 const revealObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {

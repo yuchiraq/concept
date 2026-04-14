@@ -6,9 +6,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{.MetaTitle}}</title>
   <meta name="description" content="{{.MetaDescription}}">
+  <meta name="theme-color" content="#f5f1ea">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var themeMeta = document.querySelector('meta[name="theme-color"]');
+      var darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+      root.classList.add("has-js");
+
+      function applyTheme() {
+        var theme = darkQuery.matches ? "dark" : "light";
+        root.dataset.theme = theme;
+
+        if (themeMeta) {
+          themeMeta.setAttribute("content", theme === "dark" ? "#0c1018" : "#f5f1ea");
+        }
+      }
+
+      applyTheme();
+
+      if (typeof darkQuery.addEventListener === "function") {
+        darkQuery.addEventListener("change", applyTheme);
+      } else if (typeof darkQuery.addListener === "function") {
+        darkQuery.addListener(applyTheme);
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body class="{{.PageClass}}">
@@ -18,33 +45,38 @@
     <div class="ambient ambient-c"></div>
 
     <header class="topbar reveal" data-mobile-nav>
-      <a class="brand" href="/">
-        <span class="brand-mark">N/A</span>
+      <a class="brand" href="/" aria-label="by Qoncept">
+        <span class="brand-mark" aria-hidden="true">
+          <img class="brand-logo brand-logo-light" src="/static/logos/logob.svg" alt="by Qoncept">
+          <img class="brand-logo brand-logo-dark" src="/static/logos/logow.svg" alt="">
+        </span>
         <span class="brand-copy">
-          <strong>Noise Atelier</strong>
-          <span>glass digital studio</span>
+          <strong>by Qoncept</strong>
+          <span>digital art &amp; web studio</span>
         </span>
       </a>
 
-      <button
-        class="menu-toggle"
-        type="button"
-        aria-expanded="false"
-        aria-controls="site-nav-panel"
-        aria-label="Открыть навигацию"
-      >
-        <span></span>
-        <span></span>
-      </button>
+      <div class="topbar-controls">
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-nav-panel"
+          aria-label="Open navigation"
+        >
+          <span></span>
+          <span></span>
+        </button>
+      </div>
 
       <div class="topbar-panel" id="site-nav-panel">
-        <nav class="topnav" aria-label="Основная навигация">
+        <nav class="topnav" aria-label="Main navigation">
           {{range .Nav}}
           <a class="nav-link{{if eq $.ActivePath .Href}} is-active{{end}}" href="{{.Href}}">{{.Label}}</a>
           {{end}}
         </nav>
 
-        <a class="topbar-cta" href="mailto:hello@noiseatelier.dev">hello@noiseatelier.dev</a>
+        <a class="topbar-cta" href="#contacts">Контакты</a>
       </div>
     </header>
 
@@ -53,7 +85,8 @@
     </main>
 
     <footer class="footer">
-      <span>Noise Atelier</span>
+      <span>by Qoncept</span>
+      <span>digital art &amp; web studio</span>
       <span>Go on :8089</span>
       <span>{{.Year}}</span>
     </footer>
