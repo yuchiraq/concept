@@ -13,47 +13,51 @@ document.querySelectorAll(".reveal").forEach((node) => {
   revealObserver.observe(node);
 });
 
-const mobileNav = document.querySelector("[data-mobile-nav]");
-const menuToggle = document.querySelector(".menu-toggle");
-const navLinks = document.querySelectorAll(".topnav a, .topbar-cta");
+const mobileTabbar = document.querySelector(".mobile-tabbar");
 
-if (mobileNav && menuToggle) {
-  const closeMenu = () => {
-    mobileNav.classList.remove("is-open");
-    document.body.classList.remove("has-menu-open");
-    menuToggle.setAttribute("aria-expanded", "false");
-  };
+if (mobileTabbar) {
+  let lastScrollY = window.scrollY;
+  let isTicking = false;
 
-  const openMenu = () => {
-    mobileNav.classList.add("is-open");
-    document.body.classList.add("has-menu-open");
-    menuToggle.setAttribute("aria-expanded", "true");
-  };
+  const syncMobileTabbar = () => {
+    const currentScrollY = window.scrollY;
+    const isScrollingDown = currentScrollY > lastScrollY + 8;
+    const isScrollingUp = currentScrollY < lastScrollY - 8;
 
-  menuToggle.addEventListener("click", () => {
-    if (mobileNav.classList.contains("is-open")) {
-      closeMenu();
-      return;
+    if (currentScrollY < 32 || isScrollingUp) {
+      document.body.classList.remove("is-scrolling-down");
+    } else if (isScrollingDown) {
+      document.body.classList.add("is-scrolling-down");
     }
 
-    openMenu();
-  });
+    lastScrollY = currentScrollY;
+    isTicking = false;
+  };
 
-  navLinks.forEach((link) => {
-    link.addEventListener("click", () => {
-      closeMenu();
-    });
-  });
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (window.innerWidth > 760) {
+        document.body.classList.remove("is-scrolling-down");
+        lastScrollY = window.scrollY;
+        return;
+      }
+
+      if (isTicking) {
+        return;
+      }
+
+      window.requestAnimationFrame(syncMobileTabbar);
+      isTicking = true;
+    },
+    { passive: true }
+  );
 
   window.addEventListener("resize", () => {
     if (window.innerWidth > 760) {
-      closeMenu();
+      document.body.classList.remove("is-scrolling-down");
     }
-  });
 
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeMenu();
-    }
+    lastScrollY = window.scrollY;
   });
 }

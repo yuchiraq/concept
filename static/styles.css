@@ -46,6 +46,7 @@
   --sunset: #ffd7be;
   --cta-a: #d9ff63;
   --cta-b: #f8ffd1;
+  --accent-ink: #142131;
 }
 
 *,
@@ -215,7 +216,7 @@ p {
   top: 16px;
   z-index: 20;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 18px;
   padding: 13px 16px;
@@ -232,13 +233,6 @@ p {
   justify-content: flex-end;
   gap: 14px;
   min-width: 0;
-}
-
-.topbar-controls {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
 }
 
 .brand {
@@ -312,45 +306,6 @@ html[data-theme="dark"] .brand-logo-dark {
   justify-content: center;
 }
 
-.menu-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 50px;
-  height: 50px;
-  padding: 0;
-  border: 1px solid var(--control-border);
-  border-radius: 17px;
-  background: var(--control-bg);
-  backdrop-filter: blur(18px);
-  cursor: pointer;
-  transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease;
-}
-
-.menu-toggle {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.menu-toggle span {
-  display: block;
-  width: 18px;
-  height: 2px;
-  border-radius: 999px;
-  background: var(--ink);
-  transform-origin: center;
-  transition: transform 180ms ease, opacity 180ms ease;
-}
-
-.topbar.is-open .menu-toggle span:first-child {
-  transform: translateY(3.5px) rotate(45deg);
-}
-
-.topbar.is-open .menu-toggle span:last-child {
-  transform: translateY(-3.5px) rotate(-45deg);
-}
-
 .nav-link,
 .topbar-cta {
   display: inline-flex;
@@ -367,15 +322,15 @@ html[data-theme="dark"] .brand-logo-dark {
 
 .nav-link:hover,
 .topbar-cta:hover,
-.menu-toggle:hover,
 .button:hover,
 .route-card:hover,
-.contact-link:hover {
+.contact-link:hover,
+.mobile-tab-link:hover {
   transform: translateY(-2px);
 }
 
 .nav-link.is-active {
-  color: var(--ink);
+  color: var(--accent-ink);
   background: linear-gradient(135deg, var(--cta-a), var(--cta-b));
   border-color: var(--line);
 }
@@ -499,6 +454,7 @@ main {
 }
 
 .button-primary {
+  color: var(--accent-ink);
   background: linear-gradient(135deg, var(--cta-a), var(--cta-b));
   box-shadow: 0 12px 30px rgba(255, 255, 255, 0.28);
 }
@@ -858,8 +814,164 @@ main {
   word-break: break-word;
 }
 
-body.has-menu-open {
+.section-music {
+  background:
+    radial-gradient(circle at top right, rgba(255, 139, 112, 0.2), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(120, 219, 255, 0.16), transparent 36%),
+    var(--surface);
+}
+
+.section-music h2 {
+  max-width: 15ch;
+}
+
+.music-showcase {
+  display: grid;
+  grid-template-columns: 0.94fr 1.06fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.music-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.music-credit-card,
+.music-stat,
+.music-hero-card,
+.music-cover-card {
+  position: relative;
   overflow: hidden;
+  border-radius: 30px;
+  border: 1px solid var(--line);
+  background: var(--surface-card);
+  box-shadow: var(--shadow);
+}
+
+.music-credit-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 26px;
+}
+
+.music-credit-card h3 {
+  font-size: 1.7rem;
+  line-height: 1.04;
+}
+
+.music-credit-card p {
+  color: var(--muted);
+  line-height: 1.72;
+}
+
+.music-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.music-stat {
+  padding: 20px;
+}
+
+.music-stat strong {
+  display: block;
+  margin-bottom: 8px;
+  font-family: "Syne", sans-serif;
+  font-size: 1.28rem;
+  line-height: 1;
+}
+
+.music-stat span {
+  color: var(--muted);
+  line-height: 1.58;
+  font-size: 0.94rem;
+}
+
+.music-visuals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.music-hero-card,
+.music-cover-card {
+  min-height: 0;
+  aspect-ratio: 1 / 1;
+}
+
+.music-hero-card img,
+.music-cover-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 320ms ease;
+}
+
+.music-hero-card:hover img,
+.music-cover-card:hover img {
+  transform: scale(1.035);
+}
+
+.music-stack {
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.music-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.music-grid .music-cover-card:nth-child(1),
+.music-grid .music-cover-card:nth-child(2),
+.music-grid .music-cover-card:nth-child(3) {
+  grid-column: span 2;
+}
+
+.music-grid .music-cover-card:nth-child(4),
+.music-grid .music-cover-card:nth-child(5) {
+  grid-column: span 2;
+}
+
+.music-credit-card-wide {
+  grid-column: span 2;
+  justify-content: center;
+}
+
+.mobile-tabbar {
+  display: none;
+}
+
+.mobile-tab-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  padding: 8px 10px;
+  border-radius: 18px;
+  border: 1px solid var(--control-border);
+  background: var(--control-bg);
+  color: var(--control-text);
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+  transition: transform 180ms ease, background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.mobile-tab-link.is-active {
+  color: var(--accent-ink);
+  background: linear-gradient(135deg, var(--cta-a), var(--cta-b));
+  border-color: var(--line);
 }
 
 .footer {
@@ -1017,11 +1129,32 @@ html[data-theme="dark"] .tone-sunset {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .music-showcase {
+    grid-template-columns: 1fr;
+  }
+
+  .music-stat-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 920px) {
   .gallery-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .music-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .music-grid .music-cover-card:nth-child(1),
+  .music-grid .music-cover-card:nth-child(2),
+  .music-grid .music-cover-card:nth-child(3),
+  .music-grid .music-cover-card:nth-child(4),
+  .music-grid .music-cover-card:nth-child(5),
+  .music-credit-card-wide {
+    grid-column: span 1;
   }
 
   .placeholder-card,
@@ -1039,10 +1172,11 @@ html[data-theme="dark"] .tone-sunset {
   .site-shell {
     width: min(100% - 18px, 1340px);
     padding-top: 12px;
+    padding-bottom: 108px;
   }
 
   .topbar {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: 1fr;
     align-items: center;
     gap: 12px;
     top: 10px;
@@ -1061,58 +1195,98 @@ html[data-theme="dark"] .tone-sunset {
     text-overflow: ellipsis;
   }
 
-  .topbar-controls {
-    gap: 8px;
-    align-self: center;
-  }
-
-  .menu-toggle {
-    width: 48px;
-    height: 48px;
-    border-radius: 16px;
-  }
-
-  .menu-toggle {
-    display: inline-flex;
-    justify-self: end;
-  }
-
   .topbar-panel {
-    grid-column: 1 / -1;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-    width: 100%;
-    max-height: 0;
-    opacity: 0;
-    overflow: hidden;
-    padding-top: 0;
-    transition: max-height 240ms ease, opacity 200ms ease, padding-top 200ms ease, margin-top 200ms ease;
+    display: none;
   }
 
-  .topbar.is-open .topbar-panel {
-    max-height: 360px;
+  .mobile-tabbar {
+    position: fixed;
+    left: 50%;
+    bottom: 14px;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    width: min(calc(100% - 18px), 680px);
+    padding: 10px;
+    border-radius: 26px;
+    border: 1px solid var(--line);
+    background: var(--glass-strong);
+    backdrop-filter: blur(24px) saturate(160%);
+    box-shadow: var(--shadow);
+    transform: translateX(-50%) translateY(0);
     opacity: 1;
-    margin-top: 2px;
-    padding-top: 14px;
-    border-top: 1px solid var(--line);
+    transition: transform 220ms ease, opacity 220ms ease;
   }
 
-  .topnav {
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
+  body.is-scrolling-down .mobile-tabbar {
+    transform: translateX(-50%) translateY(140%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .music-visuals,
+  .music-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .music-showcase {
+    gap: 16px;
+  }
+
+  .music-copy {
+    gap: 14px;
+  }
+
+  .music-credit-card,
+  .music-stat,
+  .music-hero-card,
+  .music-cover-card {
+    border-radius: 24px;
+  }
+
+  .music-credit-card {
+    padding: 20px;
+  }
+
+  .music-credit-card h3 {
+    font-size: 1.4rem;
+  }
+
+  .music-credit-card p,
+  .music-stat span {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .music-stat-grid {
     gap: 10px;
   }
 
-  .nav-link,
-  .topbar-cta {
-    width: 100%;
-    min-height: 50px;
+  .music-stat {
+    padding: 16px;
   }
 
-  .topbar-cta {
-    justify-content: center;
+  .music-visuals {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .music-stack {
+    grid-column: span 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    gap: 12px;
+  }
+
+  .music-grid {
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .music-grid .music-cover-card,
+  .music-credit-card-wide {
+    grid-column: span 1;
   }
 
   .contact-links {
@@ -1219,10 +1393,20 @@ html[data-theme="dark"] .tone-sunset {
     height: calc(100% - 16px);
   }
 
-  .menu-toggle {
-    width: 44px;
-    height: 44px;
-    border-radius: 15px;
+  .mobile-tabbar {
+    width: min(calc(100% - 12px), 680px);
+    bottom: 10px;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 22px;
+  }
+
+  .mobile-tab-link {
+    min-height: 50px;
+    padding: 8px 6px;
+    border-radius: 16px;
+    font-size: 0.72rem;
+    line-height: 1;
   }
 
   .brand-copy strong {
@@ -1231,6 +1415,29 @@ html[data-theme="dark"] .tone-sunset {
 
   .brand-copy span {
     font-size: 0.68rem;
+  }
+
+  .music-credit-card,
+  .music-stat {
+    padding: 20px;
+  }
+
+  .music-showcase {
+    gap: 14px;
+  }
+
+  .music-credit-card {
+    padding: 18px;
+  }
+
+  .music-credit-card h3 {
+    font-size: 1.22rem;
+  }
+
+  .music-visuals,
+  .music-stack,
+  .music-grid {
+    gap: 10px;
   }
 
   .hero,

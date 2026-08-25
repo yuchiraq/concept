@@ -44,7 +44,7 @@
     <div class="ambient ambient-b"></div>
     <div class="ambient ambient-c"></div>
 
-    <header class="topbar reveal" data-mobile-nav>
+    <header class="topbar reveal">
       <a class="brand" href="/" aria-label="by Qoncept">
         <span class="brand-mark" aria-hidden="true">
           <img class="brand-logo brand-logo-light" src="/static/logos/logob.svg" alt="by Qoncept">
@@ -55,19 +55,6 @@
           <span>digital art &amp; web studio</span>
         </span>
       </a>
-
-      <div class="topbar-controls">
-        <button
-          class="menu-toggle"
-          type="button"
-          aria-expanded="false"
-          aria-controls="site-nav-panel"
-          aria-label="Open navigation"
-        >
-          <span></span>
-          <span></span>
-        </button>
-      </div>
 
       <div class="topbar-panel" id="site-nav-panel">
         <nav class="topnav" aria-label="Main navigation">
@@ -90,6 +77,17 @@
       <span>Go on :8089</span>
       <span>{{.Year}}</span>
     </footer>
+
+    <nav class="mobile-tabbar" aria-label="Mobile navigation">
+      {{range .Nav}}
+      <a class="mobile-tab-link{{if eq $.ActivePath .Href}} is-active{{end}}" href="{{.Href}}">
+        <span>{{.Label}}</span>
+      </a>
+      {{end}}
+      <a class="mobile-tab-link" href="#contacts">
+        <span>Контакты</span>
+      </a>
+    </nav>
   </div>
 
   <script src="/static/app.js" defer></script>
