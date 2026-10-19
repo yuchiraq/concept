@@ -1,145 +1,15 @@
 {{define "home"}}{{template "base" .}}{{end}}
-
 {{define "content"}}
-<section class="hero hero-home reveal">
-  <div class="hero-copy">
-    <p class="eyebrow">Web / Design / Cover Art</p>
-    <h1>Суперстильный сайт-студия с отдельными страницами под сайты и дизайн.</h1>
-    <p class="hero-text">
-      Здесь уже собрана современная структура с glassmorphism-навигацией, сильной типографикой
-      и цветными блоками под будущие изображения. Когда картинки появятся, ты просто заменишь плейсхолдеры.
-    </p>
-
-    <div class="hero-actions">
-      <a class="button button-primary" href="/websites">Страница сайтов</a>
-      <a class="button button-secondary" href="/design">Страница дизайна</a>
-    </div>
-
-    <div class="stats-row">
-      {{range .HeroStats}}
-      <article class="stat-pill">
-        <strong>{{.Value}}</strong>
-        <span>{{.Label}}</span>
-      </article>
-      {{end}}
-    </div>
-  </div>
-
-  <div class="hero-stage">
-    <div class="display-shell">
-      <div class="display-screen tone-neutral">
-        <span class="display-label">future visuals</span>
-        <h2>Блоки под кейсы уже выглядят как art direction.</h2>
-        <div class="display-stack">
-          <div class="display-strip tone-cyan"></div>
-          <div class="display-strip tone-lime"></div>
-          <div class="display-strip tone-coral"></div>
-        </div>
-      </div>
-
-      {{range .Tracks}}
-      <a class="floating-route {{.Accent}}" href="{{.Href}}">
-        <span>{{.Label}}</span>
-        <strong>{{.Title}}</strong>
-      </a>
-      {{end}}
-    </div>
-  </div>
-</section>
-
-<section class="section reveal">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">Навигация по направлениям</p>
-      <h2>Две отдельные страницы, чтобы сайт сразу выглядел серьезно и структурно.</h2>
-    </div>
-    <p class="section-copy">Каждое направление оформлено как самостоятельная витрина, а не как случайный блок внутри лендинга.</p>
-  </div>
-
-  <div class="route-grid">
-    {{range .Tracks}}
-    <a class="route-card {{.Accent}}" href="{{.Href}}">
-      <span class="card-label">{{.Label}}</span>
-      <h3>{{.Title}}</h3>
-      <p>{{.Text}}</p>
-      <div class="chip-row">
-        {{range .Chips}}
-        <span>{{.}}</span>
-        {{end}}
-      </div>
-      <span class="route-link">Открыть страницу</span>
-    </a>
-    {{end}}
-  </div>
-</section>
-
-<section class="section reveal">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">Плейсхолдеры под картинки</p>
-      <h2>Сетка уже готова под будущие материалы, кейсы и визуалы.</h2>
-    </div>
-    <p class="section-copy">Пока вместо изображений используются цветовые панели и стеклянные заливки, чтобы сайт выглядел завершенным уже сейчас.</p>
-  </div>
-
-  <div class="gallery-grid">
-    {{range .Gallery}}
-    <article class="placeholder-card {{.Class}}">
-      <div class="placeholder-copy">
-        <span class="card-label">{{.Label}}</span>
-        <h3>{{.Title}}</h3>
-      </div>
-      <p>{{.Text}}</p>
-    </article>
-    {{end}}
-  </div>
-</section>
-
-<section class="section reveal">
-  <div class="section-heading">
-    <div>
-      <p class="eyebrow">Как дальше наполнять</p>
-      <h2>Структура уже рассчитана на спокойное добавление картинок позже.</h2>
-    </div>
-  </div>
-
-  <div class="process-grid">
-    {{range .Process}}
-    <article class="process-card">
-      <span>{{.Number}}</span>
-      <h3>{{.Title}}</h3>
-      <p>{{.Text}}</p>
-    </article>
-    {{end}}
-  </div>
-</section>
-
-<section class="contact-shell reveal" id="contacts">
-  <div class="contact-card">
-    <p class="eyebrow">Следующий шаг</p>
-    <h2>Когда будешь готов, добавим реальные кейсы, картинки и анимации поверх этой основы.</h2>
-    <p class="section-copy">
-      Сейчас сайт уже оформлен как современная студия. Позже можно спокойно расширить его галереями,
-      карточками проектов и настоящими изображениями без ломки структуры.
-    </p>
-    <div class="contact-links">
-      <a class="contact-link" href="https://instagram.com/chiraqconcept162" target="_blank" rel="noreferrer">
-        <span class="contact-link-label">Instagram</span>
-        <strong>@chiraqconcept162</strong>
-      </a>
-      <a class="contact-link" href="https://t.me/yu_cq162" target="_blank" rel="noreferrer">
-        <span class="contact-link-label">Telegram</span>
-        <strong>@yu_cq162</strong>
-      </a>
-      <a class="contact-link" href="mailto:chiraqconcept@icloud.com">
-        <span class="contact-link-label">Email</span>
-        <strong>chiraqconcept@icloud.com</strong>
-      </a>
-    </div>
-    <div class="hero-actions">
-      <a class="button button-primary" href="/websites">Перейти к сайтам</a>
-      <a class="button button-secondary" href="/design">Перейти к дизайну</a>
-    </div>
-  </div>
-</section>
-{{end}}
+<section class="hero-home"><div class="hero-grid" aria-hidden="true"></div><div class="orbit orbit-one" aria-hidden="true"></div><div class="orbit orbit-two" aria-hidden="true"></div>
+<div class="hero-topline"><span><i class="status-dot"></i> Независимый дизайнер & разработчик</span><span>Web · Design · Cover art</span></div>
+<div class="hero-center"><p class="eyebrow">Хорошая идея заслуживает сильной формы</p><h1>Вижу образ.<br>Создаю <span class="gradient-text">цифру.</span></h1><p class="hero-description">Соединяю дизайн и код, чтобы ваш проект<br class="desktop-break"> запоминался — и работал.</p><div class="hero-actions"><a class="button button-primary magnetic" href="#selected-work"><span>Смотреть работы</span><span class="arrow">↗</span></a><a class="text-link" href="https://t.me/yu_cq162" target="_blank" rel="noopener noreferrer">Есть идея? Напишите <span>↗</span></a></div></div>
+<a class="floating-art art-one" href="/design" aria-label="Смотреть 3D-арт Chiraq Concept"><img src="/static/images/optimized/done.jpg" width="1200" height="1200" alt="3D-бюст с голубым платком, Chiraq Concept"><span>3D / ART DIRECTION ↗</span></a>
+<a class="floating-art art-two" href="/design" aria-label="Смотреть обложки"><img src="/static/images/optimized/cover.jpg" width="1200" height="1200" alt="Хромированный 3D-арт OGBIGTOY"><span>COVER ART ↗</span></a>
+<a class="floating-web" href="/websites"><span class="mini-browser"><i></i><i></i><i></i><span>avayusstroi.by</span></span><div class="mini-site"><strong>СТРОИМ.<br><em>СОЗДАЁМ.</em></strong><span>WEB DESIGN & DEVELOPMENT ↗</span></div></a>
+<div class="floating-code" aria-hidden="true"><span>design.go <i>●</i></span><code><b>func</b> create() {<br>&nbsp; idea := <em>"your next project"</em><br>&nbsp; bringToLife(idea)<br>}</code></div>
+<div class="hero-bottom"><span>От визуальной идеи до работающего продукта</span><a href="#selected-work">Листайте, здесь интересно <span>↓</span></a><span>Портфолио / {{.Year}}</span></div></section>
+<div class="ticker" aria-hidden="true"><div>{{range .Projects}}<span>DESIGN WITH CHARACTER</span><b>✳</b><span>DEVELOPMENT WITH PURPOSE</span><b>✳</b>{{end}}</div></div>
+<section class="section work-section" id="selected-work"><div class="section-heading reveal"><div><p class="eyebrow">01 / Избранные проекты</p><h2>Меньше слов.<br><span class="muted">Больше дела.</span></h2></div><p>Реальный бизнес. Реальные задачи.<br>Индивидуальные решения в дизайне и коде.</p></div>{{template "web-projects" .}}</section>
+<section class="section design-section"><div class="section-heading reveal"><div><p class="eyebrow">02 / Chiraq Concept</p><h2>Визуал, который<br><span class="serif-text">чувствуешь.</span></h2></div><div><p>Музыкальные обложки, 3D и графика.<br>У каждой работы — свой характер.</p><a class="text-link" href="/design">Все работы <span>↗</span></a></div></div><div class="art-preview">{{range $i,$art := .Artworks}}{{if lt $i 4}}{{template "art-card" $art}}{{end}}{{end}}</div><div class="design-credit"><span>CHIRAQ CONCEPT / SELECTED ARTWORKS</span><a href="https://instagram.com/chiraqconcept162" target="_blank" rel="noopener noreferrer">Больше в Instagram ↗</a></div></section>
+<section class="section about-section" id="about"><div class="about-heading reveal"><p class="eyebrow">03 / За проектом — человек</p><h2>Один автор.<br><span class="gradient-text">Цельный результат.</span></h2></div><div class="about-copy reveal"><p>Я — Qoncept. Дизайнер и разработчик. Создаю сайты, пишу веб-приложения и делаю визуальные работы под именем Chiraq Concept.</p><p class="muted">Мне важно, как проект выглядит, как ощущается и как работает. Поэтому веду его целиком: от структуры и первых эскизов до кода, адаптивной версии и запуска.</p><div class="fact-grid"><div><strong data-counter="2">2</strong><span>направления:<br>дизайн и разработка</span></div><div><strong data-counter="8">8</strong><span>визуальных работ<br>в этой подборке</span></div><div><strong data-counter="2">2</strong><span>веб-проекта<br>в портфолио</span></div></div></div></section>
+{{template "services" .}}{{template "process" .}}{{end}}

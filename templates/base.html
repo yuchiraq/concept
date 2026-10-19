@@ -1,96 +1,12 @@
 {{define "base"}}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{.MetaTitle}}</title>
-  <meta name="description" content="{{.MetaDescription}}">
-  <meta name="theme-color" content="#f5f1ea">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
-  <script>
-    (function () {
-      var root = document.documentElement;
-      var themeMeta = document.querySelector('meta[name="theme-color"]');
-      var darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
-      root.classList.add("has-js");
-
-      function applyTheme() {
-        var theme = darkQuery.matches ? "dark" : "light";
-        root.dataset.theme = theme;
-
-        if (themeMeta) {
-          themeMeta.setAttribute("content", theme === "dark" ? "#0c1018" : "#f5f1ea");
-        }
-      }
-
-      applyTheme();
-
-      if (typeof darkQuery.addEventListener === "function") {
-        darkQuery.addEventListener("change", applyTheme);
-      } else if (typeof darkQuery.addListener === "function") {
-        darkQuery.addListener(applyTheme);
-      }
-    })();
-  </script>
-  <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body class="{{.PageClass}}">
-  <div class="site-shell">
-    <div class="ambient ambient-a"></div>
-    <div class="ambient ambient-b"></div>
-    <div class="ambient ambient-c"></div>
-
-    <header class="topbar reveal">
-      <a class="brand" href="/" aria-label="by Qoncept">
-        <span class="brand-mark" aria-hidden="true">
-          <img class="brand-logo brand-logo-light" src="/static/logos/logob.svg" alt="by Qoncept">
-          <img class="brand-logo brand-logo-dark" src="/static/logos/logow.svg" alt="">
-        </span>
-        <span class="brand-copy">
-          <strong>by Qoncept</strong>
-          <span>digital art &amp; web studio</span>
-        </span>
-      </a>
-
-      <div class="topbar-panel" id="site-nav-panel">
-        <nav class="topnav" aria-label="Main navigation">
-          {{range .Nav}}
-          <a class="nav-link{{if eq $.ActivePath .Href}} is-active{{end}}" href="{{.Href}}">{{.Label}}</a>
-          {{end}}
-        </nav>
-
-        <a class="topbar-cta" href="#contacts">Контакты</a>
-      </div>
-    </header>
-
-    <main>
-      {{template "content" .}}
-    </main>
-
-    <footer class="footer">
-      <span>by Qoncept</span>
-      <span>digital art &amp; web studio</span>
-      <span>Go on :8089</span>
-      <span>{{.Year}}</span>
-    </footer>
-
-    <nav class="mobile-tabbar" aria-label="Mobile navigation">
-      {{range .Nav}}
-      <a class="mobile-tab-link{{if eq $.ActivePath .Href}} is-active{{end}}" href="{{.Href}}">
-        <span>{{.Label}}</span>
-      </a>
-      {{end}}
-      <a class="mobile-tab-link" href="#contacts">
-        <span>Контакты</span>
-      </a>
-    </nav>
-  </div>
-
-  <script src="/static/app.js" defer></script>
-</body>
-</html>
-{{end}}
+<!DOCTYPE html><html lang="ru" data-theme="dark"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.MetaTitle}}</title><meta name="description" content="{{.MetaDescription}}"><meta name="theme-color" content="#101112"><meta property="og:title" content="{{.MetaTitle}}"><meta property="og:description" content="{{.MetaDescription}}"><meta property="og:type" content="website">
+<link rel="icon" href="/static/logos/logow.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('qoncept-theme')||'dark'}catch(e){}</script><link rel="stylesheet" href="/static/styles.css"></head>
+<body class="{{.PageClass}}"><a class="skip-link" href="#main">К содержимому</a>
+<header class="topbar"><a class="brand" href="/" aria-label="by Qoncept — главная"><img src="/static/logos/logow.svg" width="38" height="32" alt=""><span>by Qoncept<span class="brand-dot">®</span></span></a><nav class="topnav" aria-label="Основная навигация"><a href="/" {{if eq .ActivePath "/"}}aria-current="page"{{end}}>Главная</a><a href="/websites" {{if eq .ActivePath "/websites"}}aria-current="page"{{end}}>Сайты</a><a href="/design" {{if eq .ActivePath "/design"}}aria-current="page"{{end}}>Дизайн</a><a href="/#about">Обо мне</a></nav><div class="nav-actions"><button class="theme-toggle" aria-label="Переключить цветовую тему" title="Переключить тему">◐</button><a class="button button-small magnetic" href="https://t.me/yu_cq162" target="_blank" rel="noopener noreferrer"><span>Обсудим проект</span><span class="arrow">↗</span></a></div></header>
+<main id="main">{{template "content" .}}</main>{{template "contact" .}}
+<footer class="footer"><a href="/" class="footer-brand">by Qoncept®</a><span>Дизайн с характером. Разработка со смыслом.</span><span>© {{.Year}}</span><a href="#main">Наверх ↑</a></footer>
+<dialog class="project-dialog" id="project-dialog" aria-labelledby="dialog-title"><button class="dialog-close" aria-label="Закрыть">×</button><p class="eyebrow" id="dialog-category"></p><h2 id="dialog-title"></h2><p id="dialog-description"></p><ul id="dialog-details"></ul><a class="button button-primary" id="dialog-link" target="_blank" rel="noopener noreferrer">Открыть сайт ↗</a></dialog>
+<dialog class="lightbox" id="lightbox" aria-label="Просмотр работы"><button class="dialog-close" aria-label="Закрыть">×</button><button class="lightbox-prev" aria-label="Предыдущая работа">←</button><figure><img id="lightbox-image" alt=""><figcaption id="lightbox-caption"></figcaption></figure><button class="lightbox-next" aria-label="Следующая работа">→</button></dialog><script src="/static/app.js" defer></script></body></html>{{end}}
