@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"crypto/sha256"
-	"crypto/subtle"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -89,6 +87,20 @@ type contactSubmission struct {
 var serviceNames = map[string]string{"website": "Сайт", "software": "Сервис и автоматизация", "design": "Дизайн и анимация", "unsure": "Нужна помощь с выбором"}
 var methodNames = map[string]string{"telegram": "Telegram", "phone": "Телефон", "email": "Email"}
 
+func validContactPhone(value string) bool {
+	compact := strings.NewReplacer(" ", "", "(", "", ")", "", "-", "", ".", "").Replace(value)
+	compact = strings.TrimPrefix(compact, "+")
+	if len(compact) < 7 || len(compact) > 15 {
+		return false
+	}
+	for _, c := range compact {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
+}
+
 func (s *contactSubmission) validate() bool {
 	s.Name = strings.TrimSpace(s.Name)
 	s.Contact = strings.TrimSpace(s.Contact)
@@ -98,9 +110,15 @@ func (s *contactSubmission) validate() bool {
 	}
 	switch s.ContactMethod {
 	case "telegram":
+		if validContactPhone(s.Contact) {
+			break
+		}
 		handle := strings.TrimPrefix(s.Contact, "https://t.me/")
 		handle = strings.TrimPrefix(handle, "@")
 		if len(handle) < 5 || len(handle) > 32 {
+			return false
+		}
+		if !((handle[0] >= 'a' && handle[0] <= 'z') || (handle[0] >= 'A' && handle[0] <= 'Z')) {
 			return false
 		}
 		for _, c := range handle {
@@ -110,15 +128,7 @@ func (s *contactSubmission) validate() bool {
 		}
 		s.Contact = "@" + handle
 	case "phone":
-		digits := 0
-		for _, c := range s.Contact {
-			if c >= '0' && c <= '9' {
-				digits++
-			} else if !strings.ContainsRune("+()- .", c) {
-				return false
-			}
-		}
-		if digits < 7 || digits > 15 {
+		if !validContactPhone(s.Contact) {
 			return false
 		}
 	case "email":
@@ -212,13 +222,15 @@ type siteFeatures struct {
 	trustedProxyHeaders bool
 	mu                  sync.Mutex
 	limits              map[string]rateWindow
+	loginLimits         map[string]rateWindow
+	ownerSessions       map[[32]byte]ownerSession
 	now                 func() time.Time
 }
 
 func defaultFeatures() *siteFeatures {
-	return &siteFeatures{tracker: newQRTracker(""), limits: map[string]rateWindow{}, now: time.Now}
+	return &siteFeatures{tracker: newQRTracker(""), limits: map[string]rateWindow{}, loginLimits: map[string]rateWindow{}, ownerSessions: map[[32]byte]ownerSession{}, now: time.Now}
 }
-func (f *siteFeatures) allowContact(r *http.Request) bool {
+func (f *siteFeatures) clientAddress(r *http.Request) string {
 	host, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {
 		host = r.RemoteAddr
@@ -235,6 +247,10 @@ func (f *siteFeatures) allowContact(r *http.Request) bool {
 			host = ip.String()
 		}
 	}
+	return host
+}
+func (f *siteFeatures) allowContact(r *http.Request) bool {
+	host := f.clientAddress(r)
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	now := f.now()
@@ -325,21 +341,13 @@ func (f *siteFeatures) ownerOnly(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "no-store")
 		w.Header().Set("X-Robots-Tag", "noindex, nofollow")
-		if f.adminPassword != "" {
-			user, password, ok := r.BasicAuth()
-			got := sha256.Sum256([]byte(password))
-			want := sha256.Sum256([]byte(f.adminPassword))
-			if !ok || user != "owner" || subtle.ConstantTimeCompare(got[:], want[:]) != 1 {
-				w.Header().Set("WWW-Authenticate", `Basic realm="Qoncept QR", charset="UTF-8"`)
-				http.Error(w, "Только для владельца сайта", 401)
-				return
+		if _, ok := f.ownerSessionFor(r); !ok && !f.localOwner(r) {
+			nextURL := "/site/qr"
+			if r.URL.Path == nextURL && r.URL.RawQuery != "" {
+				nextURL += "?" + r.URL.RawQuery
 			}
-		} else {
-			host, _, _ := net.SplitHostPort(r.RemoteAddr)
-			if !f.localAdmin || !net.ParseIP(host).IsLoopback() {
-				http.Error(w, "Настройте пароль владельца в settings.json", 403)
-				return
-			}
+			http.Redirect(w, r, "/site/qr/login?next="+url.QueryEscape(nextURL), http.StatusSeeOther)
+			return
 		}
 		next(w, r)
 	}

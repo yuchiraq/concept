@@ -1,0 +1,4 @@
+{{define "not-found"}}{{template "base" .}}{{end}}
+{{define "content"}}
+<section class="not-found-section"><div class="not-found-grid" aria-hidden="true"></div><p class="eyebrow">{{t "Небольшой сбой в маршруте"}}</p><div class="glitch-code" aria-hidden="true"><span class="glitch-ghost glitch-a">404</span><span class="glitch-ghost glitch-b">404</span><span class="glitch-base">404</span></div><h1>{{t "Страница не найдена."}}</h1><p class="not-found-copy">{{t "Возможно, ссылка изменилась"}}<br>{{t "или в адресе опечатка. Найдём другой путь."}}</p><div class="not-found-actions"><a class="button button-primary" href="{{url "/"}}">{{t "На главную"}} {{template "arrow-up-right"}}</a><a class="text-link" href="{{url "/#selected-work"}}">{{t "Посмотреть работы"}} {{template "arrow-up-right"}}</a></div><span class="not-found-label" aria-hidden="true">ERROR / PAGE NOT FOUND</span></section>
+{{end}}

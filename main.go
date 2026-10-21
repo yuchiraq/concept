@@ -24,6 +24,7 @@ type Project struct {
 }
 type Artwork struct{ Image, Title, Type string }
 type PageData struct {
+	LocaleData
 	MetaTitle, MetaDescription, ActivePath, PageClass, Eyebrow, HeroTitle, HeroText string
 	CanonicalURL, SiteURL, OGImage                                                  string
 	StructuredData                                                                  template.JS
@@ -79,6 +80,10 @@ func requestOrigin(r *http.Request) string {
 }
 
 func structuredData(page PageData) (template.JS, error) {
+	lang := page.Language
+	if !validLanguage(lang) {
+		lang = "ru"
+	}
 	organizationID := page.SiteURL + "/#business"
 	websiteID := page.SiteURL + "/#website"
 	services := []map[string]any{
@@ -87,6 +92,11 @@ func structuredData(page PageData) (template.JS, error) {
 		{"@type": "Service", "name": "Обложки и наружная реклама", "serviceType": "Графический дизайн и 3D", "url": page.SiteURL + "/design", "provider": map[string]string{"@id": organizationID}},
 		{"@type": "Service", "name": "Анимация для проектов и рекламы", "serviceType": "Моушн-дизайн", "url": page.SiteURL + "/design", "provider": map[string]string{"@id": organizationID}},
 	}
+	for _, service := range services {
+		service["name"] = translate(lang, service["name"].(string))
+		service["serviceType"] = translate(lang, service["serviceType"].(string))
+		service["url"] = page.SiteURL + localizedURL(lang, strings.TrimPrefix(service["url"].(string), page.SiteURL))
+	}
 	offers := make([]map[string]any, 0, len(services))
 	for _, service := range services {
 		offers = append(offers, map[string]any{"@type": "Offer", "itemOffered": service})
@@ -94,9 +104,9 @@ func structuredData(page PageData) (template.JS, error) {
 	data := map[string]any{
 		"@context": "https://schema.org",
 		"@graph": []any{
-			map[string]any{"@type": "Organization", "@id": organizationID, "name": "by Qoncept", "alternateName": "Chiraq Concept", "url": page.SiteURL + "/", "image": page.OGImage, "email": "chiraqconcept@icloud.com", "sameAs": []string{contactURL, "https://instagram.com/chiraqconcept162"}, "hasOfferCatalog": map[string]any{"@type": "OfferCatalog", "name": "Дизайн и разработка", "itemListElement": offers}},
-			map[string]any{"@type": "WebSite", "@id": websiteID, "name": "by Qoncept", "url": page.SiteURL + "/", "inLanguage": "ru", "publisher": map[string]string{"@id": organizationID}},
-			map[string]any{"@type": "WebPage", "@id": page.CanonicalURL + "#page", "url": page.CanonicalURL, "name": page.MetaTitle, "description": page.MetaDescription, "inLanguage": "ru", "isPartOf": map[string]string{"@id": websiteID}, "about": map[string]string{"@id": organizationID}},
+			map[string]any{"@type": "Organization", "@id": organizationID, "name": "by Qoncept", "alternateName": "Chiraq Concept", "url": page.SiteURL + "/", "image": page.OGImage, "email": "chiraqconcept@icloud.com", "sameAs": []string{contactURL, "https://instagram.com/chiraqconcept162"}, "hasOfferCatalog": map[string]any{"@type": "OfferCatalog", "name": translate(lang, "Дизайн и разработка"), "itemListElement": offers}},
+			map[string]any{"@type": "WebSite", "@id": websiteID, "name": "by Qoncept", "url": page.SiteURL + localizedURL(lang, "/"), "inLanguage": lang, "publisher": map[string]string{"@id": organizationID}},
+			map[string]any{"@type": "WebPage", "@id": page.CanonicalURL + "#page", "url": page.CanonicalURL, "name": page.MetaTitle, "description": page.MetaDescription, "inLanguage": lang, "isPartOf": map[string]string{"@id": websiteID}, "about": map[string]string{"@id": organizationID}},
 		},
 	}
 	encoded, err := json.Marshal(data)
@@ -115,6 +125,9 @@ type sitemapDocument struct {
 }
 
 func newHandler(configuredSiteURL string, configuredFeatures ...*siteFeatures) (http.Handler, error) {
+	if err := loadTranslations(); err != nil {
+		return nil, err
+	}
 	origin := ""
 	if strings.TrimSpace(configuredSiteURL) != "" {
 		var err error
@@ -128,6 +141,27 @@ func newHandler(configuredSiteURL string, configuredFeatures ...*siteFeatures) (
 			return origin
 		}
 		return requestOrigin(r)
+	}
+	notFoundTemplates, err := localizedTemplates("templates/base.html", "templates/partials.html", "templates/contact.html", "templates/404.html")
+	if err != nil {
+		return nil, err
+	}
+	notFound := func(w http.ResponseWriter, r *http.Request) {
+		data := PageData{MetaTitle: "Страница не найдена — by Qoncept", MetaDescription: "Вернитесь на главную и посмотрите проекты by Qoncept.", PageClass: "page-not-found", SiteURL: resolveOrigin(r), CanonicalURL: resolveOrigin(r) + r.URL.EscapedPath(), OGImage: resolveOrigin(r) + "/static/images/covers/cover.jpg", Year: time.Now().Year()}
+		lang := languageFromRequest(r)
+		data = localizePage(data, lang)
+		data.LocaleData = localeData(lang, r.URL.Path, data.SiteURL)
+		data.Alternates = nil
+		data.CanonicalURL = data.SiteURL + localizedURL(lang, r.URL.EscapedPath())
+		var output bytes.Buffer
+		if err := notFoundTemplates[lang].ExecuteTemplate(&output, "not-found", data); err != nil {
+			http.Error(w, translate(languageFromRequest(r), "Страница не найдена"), http.StatusNotFound)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("X-Robots-Tag", "noindex, follow")
+		w.WriteHeader(http.StatusNotFound)
+		w.Write(output.Bytes())
 	}
 	mux := http.NewServeMux()
 	features := defaultFeatures()
@@ -151,11 +185,13 @@ func newHandler(configuredSiteURL string, configuredFeatures ...*siteFeatures) (
 	mux.HandleFunc("/sitemap.xml", func(w http.ResponseWriter, r *http.Request) {
 		document := sitemapDocument{XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9"}
 		for _, page := range pageList {
-			document.URLs = append(document.URLs, sitemapURL{Location: resolveOrigin(r) + page.ActivePath})
+			for _, lang := range languages {
+				document.URLs = append(document.URLs, sitemapURL{Location: resolveOrigin(r) + localizedURL(lang, page.ActivePath)})
+			}
 		}
 		output, err := xml.Marshal(document)
 		if err != nil {
-			http.Error(w, "Не удалось загрузить карту сайта", http.StatusInternalServerError)
+			http.Error(w, translate(languageFromRequest(r), "Не удалось загрузить карту сайта"), http.StatusInternalServerError)
 			return
 		}
 		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
@@ -173,38 +209,40 @@ func newHandler(configuredSiteURL string, configuredFeatures ...*siteFeatures) (
 			file = "templates/service.html"
 			name = "service"
 		}
-		tmpl, err := template.ParseFiles("templates/base.html", "templates/partials.html", "templates/media.html", "templates/contact.html", "templates/demos.html", file)
+		templates, err := localizedTemplates("templates/base.html", "templates/partials.html", "templates/media.html", "templates/contact.html", "templates/demos.html", file)
 		if err != nil {
 			return nil, fmt.Errorf("parse %s: %w", file, err)
 		}
 		mux.HandleFunc(page.ActivePath, func(w http.ResponseWriter, r *http.Request) {
 			if r.URL.Path != page.ActivePath {
-				http.NotFound(w, r)
+				notFound(w, r)
 				return
 			}
 			// The stored template data stays immutable across concurrent requests.
-			data := page
+			lang := languageFromRequest(r)
+			data := localizePage(page, lang)
 			data.SiteURL = resolveOrigin(r)
-			data.CanonicalURL = data.SiteURL + page.ActivePath
+			data.LocaleData = localeData(lang, page.ActivePath, data.SiteURL)
+			data.CanonicalURL = data.SiteURL + localizedURL(lang, page.ActivePath)
 			data.OGImage = data.SiteURL + "/static/images/covers/cover.jpg"
 			var err error
 			data.StructuredData, err = structuredData(data)
 			if err != nil {
 				log.Printf("structured data: %v", err)
-				http.Error(w, "Не удалось загрузить страницу", http.StatusInternalServerError)
+				http.Error(w, translate(languageFromRequest(r), "Не удалось загрузить страницу"), http.StatusInternalServerError)
 				return
 			}
 			var output bytes.Buffer
-			if err := tmpl.ExecuteTemplate(&output, name, data); err != nil {
+			if err := templates[lang].ExecuteTemplate(&output, name, data); err != nil {
 				log.Printf("render: %v", err)
-				http.Error(w, "Не удалось загрузить страницу", http.StatusInternalServerError)
+				http.Error(w, translate(languageFromRequest(r), "Не удалось загрузить страницу"), http.StatusInternalServerError)
 				return
 			}
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			w.Write(output.Bytes())
 		})
 	}
-	return mux, nil
+	return features.languageMiddleware(mux), nil
 }
 
 func main() {

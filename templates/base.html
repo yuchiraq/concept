@@ -1,23 +1,26 @@
 {{define "base"}}
 <!DOCTYPE html>
-<html lang="ru" data-theme="dark">
+<html lang="{{.Language}}" data-page="{{.ActivePath}}" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{.MetaTitle}}</title>
   <meta name="description" content="{{.MetaDescription}}">
-  <meta name="robots" content="index, follow, max-image-preview:large, max-video-preview:-1">
+  <meta name="robots" content="{{if eq .PageClass "page-not-found"}}noindex, follow{{else}}index, follow, max-image-preview:large, max-video-preview:-1{{end}}">
   <meta name="author" content="by Qoncept / Chiraq Concept">
   <meta name="theme-color" content="#101112">
   <link rel="canonical" href="{{.CanonicalURL}}">
+  {{range .Alternates}}<link rel="alternate" hreflang="{{.Code}}" href="{{.URL}}">{{end}}
+  {{if .Alternates}}<link rel="alternate" hreflang="x-default" href="{{.SiteURL}}{{.ActivePath}}">{{end}}
   <meta property="og:title" content="{{.MetaTitle}}">
   <meta property="og:description" content="{{.MetaDescription}}">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="by Qoncept">
-  <meta property="og:locale" content="ru_RU">
+  <meta property="og:locale" content="{{.OGLocale}}">
+  {{range .Alternates}}{{if not .Current}}<meta property="og:locale:alternate" content="{{.Locale}}">{{end}}{{end}}
   <meta property="og:url" content="{{.CanonicalURL}}">
   <meta property="og:image" content="{{.OGImage}}">
-  <meta property="og:image:alt" content="Авторская 3D-обложка Chiraq Concept">
+  <meta property="og:image:alt" content="{{t "Обложки и 3D / Chiraq Concept"}}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{.MetaTitle}}">
   <meta name="twitter:description" content="{{.MetaDescription}}">
@@ -27,35 +30,39 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script src="/static/theme.js"></script>
+  <script src="/static/region.js"></script>
   <link rel="stylesheet" href="/static/styles.css">
   <link rel="stylesheet" href="/static/demos.css">
-  <script type="application/ld+json">{{.StructuredData}}</script>
+  <link rel="stylesheet" href="/static/enhancements.css">
+  {{if .StructuredData}}<script type="application/ld+json">{{.StructuredData}}</script>{{end}}
 </head>
 <body class="{{.PageClass}}">
-  <a class="skip-link" href="#main">К содержимому</a>
+  <a class="skip-link" href="#main">{{t "К содержимому"}}</a>
   <header class="topbar">
-    <a class="brand" href="/" aria-label="by Qoncept — главная"><img src="/static/logos/logow.svg" width="38" height="32" alt=""><span>by Qoncept<span class="brand-dot">®</span></span></a>
-    <nav class="topnav" id="primary-nav" aria-label="Основная навигация">
-      <a href="/" {{if eq .ActivePath "/"}}aria-current="page"{{end}}>Главная</a>
-      <a href="/websites" {{if eq .ActivePath "/websites"}}aria-current="page"{{end}}>Сайты</a>
-      <a href="/design" {{if eq .ActivePath "/design"}}aria-current="page"{{end}}>Дизайн</a>
-      <a href="/#services">Услуги</a>
+    <a class="brand" href="{{url "/"}}" aria-label="{{t "by Qoncept / qoncept.by — главная"}}"><img src="/static/logos/logow.svg" width="38" height="32" alt=""><span class="brand-label" aria-hidden="true"><span class="brand-name" data-brand-cycle>by Qoncept</span><span class="brand-dot">®</span></span></a>
+    <nav class="topnav" id="primary-nav" aria-label="{{t "Основная навигация"}}">
+      <a href="{{url "/"}}" {{if eq .ActivePath "/"}}aria-current="page"{{end}}>{{t "Главная"}}</a>
+      <a href="{{url "/websites"}}" {{if eq .ActivePath "/websites"}}aria-current="page"{{end}}>{{t "Сайты"}}</a>
+      <a href="{{url "/design"}}" {{if eq .ActivePath "/design"}}aria-current="page"{{end}}>{{t "Дизайн"}}</a>
+      <a href="{{url "/#services"}}">{{t "Услуги"}}</a>
     </nav>
     <div class="nav-actions">
-      <a class="button button-small magnetic" href="#contacts" data-open-contact><span>Обсудить проект</span><span class="arrow">{{template "arrow-up-right"}}</span></a>
-      <button class="nav-toggle" type="button" aria-label="Скрыть навигацию" aria-controls="primary-nav" aria-expanded="true"><span></span><span></span></button>
+      <a class="button button-small magnetic" href="#contacts" data-open-contact><span>{{t "Обсудить проект"}}</span><span class="arrow">{{template "arrow-up-right"}}</span></a>
+      <button class="nav-toggle" type="button" aria-label="{{t "Скрыть навигацию"}}" aria-controls="primary-nav" aria-expanded="true"><span></span><span></span></button>
     </div>
   </header>
   <main id="main">{{template "content" .}}</main>
   {{template "contact" .}}
-  <footer class="footer"><a href="/" class="footer-brand">by Qoncept®</a><span>Сайты, сервисы и дизайн для ваших задач.</span><span>© {{.Year}}</span><a href="#main">Наверх {{template "arrow-up"}}</a></footer>
+  <footer class="footer"><a href="{{url "/"}}" class="footer-brand">by Qoncept®</a><span>{{t "Сайты, сервисы и дизайн для ваших задач."}}</span><span>© {{.Year}}</span><a href="#main">{{t "Наверх"}} {{template "arrow-up"}}</a>{{template "language-switcher" .}}</footer>
   <dialog class="project-dialog" id="project-dialog" aria-labelledby="dialog-title">
-    <button class="dialog-close" aria-label="Закрыть">×</button><p class="eyebrow" id="dialog-category"></p><h2 id="dialog-title"></h2><p id="dialog-description"></p><ul id="dialog-details"></ul><a class="button button-primary" id="dialog-link" target="_blank" rel="noopener noreferrer">Обсудить проект {{template "arrow-up-right"}}</a>
+    <button class="dialog-close" aria-label="{{t "Закрыть"}}">×</button><p class="eyebrow" id="dialog-category"></p><h2 id="dialog-title"></h2><p id="dialog-description"></p><ul id="dialog-details"></ul><a class="button button-primary" id="dialog-link" target="_blank" rel="noopener noreferrer">{{t "Обсудить проект"}} {{template "arrow-up-right"}}</a>
   </dialog>
-  <dialog class="lightbox" id="lightbox" aria-label="Просмотр работы"><button class="dialog-close" aria-label="Закрыть">×</button><button class="lightbox-prev" aria-label="Предыдущая работа">{{template "arrow-left"}}</button><figure><img id="lightbox-image" alt=""><figcaption id="lightbox-caption"></figcaption></figure><button class="lightbox-next" aria-label="Следующая работа">{{template "arrow-right"}}</button></dialog>
+  <dialog class="lightbox" id="lightbox" aria-label="{{t "Просмотр работы"}}"><button class="dialog-close" aria-label="{{t "Закрыть"}}">×</button><button class="lightbox-prev" aria-label="{{t "Предыдущая работа"}}">{{template "arrow-left"}}</button><figure><img id="lightbox-image" alt=""><figcaption id="lightbox-caption"></figcaption></figure><button class="lightbox-next" aria-label="{{t "Следующая работа"}}">{{template "arrow-right"}}</button></dialog>
   {{template "contact-form" .}}
+  {{template "language-client" .}}
   <script src="/static/app.js" defer></script>
   <script src="/static/demos.js" defer></script>
+  <script src="/static/motion.js" defer></script>
   <script src="/static/contact.js" defer></script>
 </body>
 </html>

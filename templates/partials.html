@@ -1,40 +1,40 @@
 {{define "web-projects"}}<div class="project-grid">{{range .Projects}}<article class="project-card {{.Class}} reveal"><div class="project-visual spotlight"><div class="project-visual-top"><span>{{.Category}}</span><span>{{.Number}} / WEB</span></div>
 {{if eq .ID "avayusstroi"}}{{template "avs-demo"}}{{else}}{{template "workservice-demo"}}{{end}}
-<button class="project-open" data-project="{{.ID}}" aria-label="Подробнее о проекте {{.Name}}">{{template "arrow-up-right"}}</button></div><div class="project-info"><div><p class="eyebrow">{{.Category}}</p><h3>{{.Name}}</h3></div><div class="project-tags">{{range .Tags}}<span>{{.}}</span>{{end}}</div></div><p class="project-description">{{.Description}}</p><div class="project-links"><button class="text-link" data-project="{{.ID}}">О проекте <span>{{template "arrow-up-right"}}</span></button>{{if .URL}}<a href="{{.URL}}" target="_blank" rel="noopener noreferrer">{{.Domain}} {{template "arrow-up-right"}}</a>{{else}}<a href="#contacts" data-open-contact data-service="software">{{.CTALabel}} {{template "arrow-up-right"}}</a>{{end}}</div><template id="data-{{.ID}}"><div data-title>{{.Name}}</div><div data-category>{{.Category}}</div><div data-description>{{.Description}}</div><ul>{{range .Details}}<li>{{.}}</li>{{end}}</ul><a data-cta data-label="{{.CTALabel}}" href="{{.CTAURL}}"></a></template></article>{{end}}</div>{{end}}
-{{define "art-card"}}<button class="art-card reveal" data-art="/static/images/covers/{{.Image}}" data-title="{{.Title}}" aria-label="Открыть работу {{.Title}}"><div class="art-image"><img src="/static/images/covers/{{.Image}}" width="1200" height="1200" loading="lazy" decoding="async" alt="{{.Title}} — авторская работа Chiraq Concept"><span class="art-expand" aria-hidden="true">{{template "arrow-up-right"}}</span></div><span class="art-caption"><strong>{{.Title}}</strong><span>{{.Type}}</span></span></button>{{end}}
+<button class="project-open" data-project="{{.ID}}" aria-label="{{t "Подробнее о проекте"}} {{.Name}}">{{template "arrow-up-right"}}</button></div><div class="project-info"><div><p class="eyebrow">{{.Category}}</p><h3>{{.Name}}</h3></div><div class="project-tags">{{range .Tags}}<span>{{.}}</span>{{end}}</div></div><p class="project-description">{{.Description}}</p><div class="project-links"><button class="text-link" data-project="{{.ID}}">{{t "О проекте"}} <span>{{template "arrow-up-right"}}</span></button>{{if .URL}}<a href="{{.URL}}" target="_blank" rel="noopener noreferrer">{{.Domain}} {{template "arrow-up-right"}}</a>{{else}}<a href="#contacts" data-open-contact data-service="software">{{.CTALabel}} {{template "arrow-up-right"}}</a>{{end}}</div><template id="data-{{.ID}}"><div data-title>{{.Name}}</div><div data-category>{{.Category}}</div><div data-description>{{.Description}}</div><ul>{{range .Details}}<li>{{.}}</li>{{end}}</ul><a data-cta data-label="{{.CTALabel}}" href="{{.CTAURL}}"></a></template></article>{{end}}</div>{{end}}
+{{define "art-card"}}<button class="art-card reveal" data-art="/static/images/covers/{{.Image}}" data-title="{{.Title}}" aria-label="{{t "Открыть работу"}} {{.Title}}"><div class="art-image"><img src="/static/images/covers/{{.Image}}" width="1200" height="1200" loading="lazy" decoding="async" alt="{{.Title}} {{t "— авторская работа Chiraq Concept"}}"><span class="art-expand" aria-hidden="true">{{template "arrow-up-right"}}</span></div><span class="art-caption"><strong>{{.Title}}</strong><span>{{.Type}}</span></span></button>{{end}}
 
 {{define "services"}}
 <section class="section services-section" id="services">
-  <div class="section-heading reveal"><div><p class="eyebrow">Что нужно вашему проекту?</p><h2>Найдём решение.<br><span class="muted">Создадим результат.</span></h2></div><p>Расскажите о задаче.<br>Предложу подходящий формат и оценю работу.</p></div>
-  <a class="service-row reveal" href="/websites"><span class="service-number">01</span><h3>Сайты и программные решения</h3><p>Сайты · Автоматизация · Системы для бизнеса</p><span class="service-arrow">{{template "arrow-up-right"}}</span></a>
-  <a class="service-row reveal" href="/design"><span class="service-number">02</span><h3>Дизайн и реклама</h3><p>Обложки · Анимация · Афиши · Наружная реклама</p><span class="service-arrow">{{template "arrow-up-right"}}</span></a>
+  <div class="section-heading reveal"><div><p class="eyebrow">{{t "Что нужно вашему проекту?"}}</p><h2>{{t "Найдём решение."}}<br><span class="muted">{{t "Создадим результат."}}</span></h2></div><p>{{t "Расскажите о задаче."}}<br>{{t "Предложу подходящий формат и оценю работу."}}</p></div>
+  <a class="service-row reveal" href="{{url "/websites"}}"><span class="service-number">01</span><h3>{{t "Сайты и программные решения"}}</h3><p>{{t "Сайты · Автоматизация · Системы для бизнеса"}}</p><span class="service-arrow">{{template "arrow-up-right"}}</span></a>
+  <a class="service-row reveal" href="{{url "/design"}}"><span class="service-number">02</span><h3>{{t "Дизайн и реклама"}}</h3><p>{{t "Обложки · Анимация · Афиши · Наружная реклама"}}</p><span class="service-arrow">{{template "arrow-up-right"}}</span></a>
 </section>
 {{end}}
 {{define "process"}}
 <section class="section process-section">
-  <div class="section-heading reveal"><div><p class="eyebrow">Как мы работаем</p><h2>Понятно на каждом шаге.</h2></div><span class="muted">От вашей задачи до готового проекта</span></div>
+  <div class="section-heading reveal"><div><p class="eyebrow">{{t "Как мы работаем"}}</p><h2>{{t "Понятно на каждом шаге."}}</h2></div><span class="muted">{{t "От вашей задачи до готового проекта"}}</span></div>
   <div class="process-grid">
-    <article class="reveal"><span>01 / Обсуждаем</span><h3>Задача и оценка.</h3><p>Определяем, что нужно бизнесу. Согласуем состав работ, сроки, стоимость и удобный способ оплаты.</p></article>
-    <article class="reveal"><span>02 / Создаём</span><h3>Концепция и работа.</h3><p>Показываю направление, прорабатываю детали и учитываю ваши комментарии на согласованных этапах.</p></article>
-    <article class="reveal"><span>03 / Запускаем</span><h3>Готовый результат.</h3><p>Проверяю проект, передаю материалы или запускаю сайт. Объясняю, как пользоваться, и остаюсь на связи.</p></article>
+    <article class="reveal"><span>{{t "01 / Обсуждаем"}}</span><h3>{{t "Задача и оценка."}}</h3><p>{{t "Определяем, что нужно бизнесу. Согласуем состав работ, сроки, стоимость и удобный способ оплаты."}}</p></article>
+    <article class="reveal"><span>{{t "02 / Создаём"}}</span><h3>{{t "Концепция и работа."}}</h3><p>{{t "Показываю направление, прорабатываю детали и учитываю ваши комментарии на согласованных этапах."}}</p></article>
+    <article class="reveal"><span>{{t "03 / Запускаем"}}</span><h3>{{t "Готовый результат."}}</h3><p>{{t "Проверяю проект, передаю материалы или запускаю сайт. Объясняю, как пользоваться, и остаюсь на связи."}}</p></article>
   </div>
 </section>
 {{end}}
 {{define "faq"}}
 <section class="section faq">
-  <p class="eyebrow">До начала работы</p><h2>Ответы на ваши вопросы.</h2>
-  <details><summary>Что нужно, чтобы оценить проект?<span>+</span></summary><p>Напишите, какой результат нужен, для кого создаётся проект и к какой дате он должен быть готов. Присылайте материалы и референсы, если они есть. Если задания пока нет, помогу разобраться с объёмом работ.</p></details>
-  <details><summary>Как узнать стоимость и сроки?<span>+</span></summary><p>Оценю задачу и предложу состав работ. Согласуем стоимость, сроки и этапы до начала проекта, чтобы вы понимали, за что платите и какой результат получите.</p></details>
-  <details><summary>Как можно оплатить работу?<span>+</span></summary><p>Оплата любым удобным для вас способом. Способ оплаты и порядок расчётов согласуем до начала работы.</p></details>
-  <details><summary>Можно заказать только дизайн или разработку?<span>+</span></summary><p>Да. Можно заказать отдельную обложку, рекламный макет, анимацию или интерфейс. Также могу разработать сайт по готовому дизайну или доработать существующий проект.</p></details>
+  <p class="eyebrow">{{t "До начала работы"}}</p><h2>{{t "Ответы на ваши вопросы."}}</h2>
+  <details><summary>{{t "Что нужно, чтобы оценить проект?"}}<span>+</span></summary><p>{{t "Напишите, какой результат нужен, для кого создаётся проект и к какой дате он должен быть готов. Присылайте материалы и референсы, если они есть. Если задания пока нет, помогу разобраться с объёмом работ."}}</p></details>
+  <details><summary>{{t "Как узнать стоимость и сроки?"}}<span>+</span></summary><p>{{t "Оценю задачу и предложу состав работ. Согласуем стоимость, сроки и этапы до начала проекта, чтобы вы понимали, за что платите и какой результат получите."}}</p></details>
+  <details><summary>{{t "Как можно оплатить работу?"}}<span>+</span></summary><p>{{t "Оплата любым удобным для вас способом. Способ оплаты и порядок расчётов согласуем до начала работы."}}</p></details>
+  <details><summary>{{t "Можно заказать только дизайн или разработку?"}}<span>+</span></summary><p>{{t "Да. Можно заказать отдельную обложку, рекламный макет, анимацию или интерфейс. Также могу разработать сайт по готовому дизайну или доработать существующий проект."}}</p></details>
 </section>
 {{end}}
 {{define "contact"}}
 <section class="contact-section" id="contacts">
-  <div class="contact-top"><p class="eyebrow"><i class="status-dot"></i> Обсудим вашу задачу</p><span>LET’S MAKE IT REAL</span></div>
-  <h2>Ваш следующий<br><a href="#contacts" data-open-contact>сильный проект<span>{{template "arrow-up-right"}}</span></a></h2>
-  <div class="contact-bottom"><div><p>Напишите, что хотите создать.<br>Предложу решение и оценю стоимость и сроки.</p><p class="payment-note">Оплата любым удобным способом.<br>Все условия согласуем до начала работы.</p></div>
-    <div class="contact-links"><a href="https://t.me/yu_cq162" target="_blank" rel="noopener noreferrer">Обсудить в Telegram {{template "arrow-up-right"}}<span>@yu_cq162</span></a><a href="https://instagram.com/chiraqconcept162" target="_blank" rel="noopener noreferrer">Instagram {{template "arrow-up-right"}}<span>@chiraqconcept162</span></a><a href="mailto:chiraqconcept@icloud.com">Написать на почту {{template "arrow-up-right"}}<span>chiraqconcept@icloud.com</span></a></div>
+  <div class="contact-top"><p class="eyebrow"><i class="status-dot"></i> {{t "Обсудим вашу задачу"}}</p><span>LET’S MAKE IT REAL</span></div>
+  <h2>{{t "Ваш следующий"}}<br><a href="#contacts" data-open-contact>{{t "сильный проект"}}<span>{{template "arrow-up-right"}}</span></a></h2>
+  <div class="contact-bottom"><div><p>{{t "Напишите, что хотите создать."}}<br>{{t "Предложу решение и оценю стоимость и сроки."}}</p><p class="payment-note">{{t "Оплата любым удобным способом."}}<br>{{t "Все условия согласуем до начала работы."}}</p></div>
+    <div class="contact-links"><a href="https://t.me/yu_cq162" target="_blank" rel="noopener noreferrer">{{t "Обсудить в Telegram"}} {{template "arrow-up-right"}}<span>@yu_cq162</span></a><a href="https://instagram.com/chiraqconcept162" target="_blank" rel="noopener noreferrer">Instagram {{template "arrow-up-right"}}<span>@chiraqconcept162</span></a><a href="mailto:chiraqconcept@icloud.com">{{t "Написать на почту"}} {{template "arrow-up-right"}}<span>chiraqconcept@icloud.com</span></a></div>
   </div>
 </section>
 {{end}}

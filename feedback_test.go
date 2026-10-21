@@ -132,7 +132,7 @@ func TestContactChannelValidation(t *testing.T) {
 	for _, tc := range []struct {
 		method, contact string
 		valid           bool
-	}{{"phone", "+375 (29) 123-45-67", true}, {"phone", "123", false}, {"email", "hello@example.com", true}, {"email", "not-mail", false}, {"telegram", "https://t.me/test_client", true}, {"telegram", "@bad handle", false}} {
+	}{{"phone", "+375 (29) 123-45-67", true}, {"phone", "123", false}, {"phone", "++375291234567", false}, {"email", "hello@example.com", true}, {"email", "not-mail", false}, {"telegram", "https://t.me/test_client", true}, {"telegram", "+375 (29) 123-45-67", true}, {"telegram", "375291234567", true}, {"telegram", "123", false}, {"telegram", "123456", false}, {"telegram", "@bad handle", false}} {
 		s := validContact()
 		s.ContactMethod = tc.method
 		s.Contact = tc.contact
@@ -198,18 +198,19 @@ func TestQRDashboardAccessAndPNG(t *testing.T) {
 	}
 	w := httptest.NewRecorder()
 	handler.ServeHTTP(w, httptest.NewRequest(http.MethodGet, "https://qoncept.example/site/qr", nil))
-	if w.Code != 403 {
+	if w.Code != http.StatusSeeOther {
 		t.Fatal("unconfigured public admin page is exposed")
 	}
 	f.adminPassword = "private-password"
 	w = httptest.NewRecorder()
 	handler.ServeHTTP(w, httptest.NewRequest(http.MethodGet, "https://qoncept.example/site/qr", nil))
-	if w.Code != 401 {
+	if w.Code != http.StatusSeeOther || w.Header().Get("WWW-Authenticate") != "" {
 		t.Fatal("owner authentication is not required")
 	}
+	cookie, _ := loginOwnerForTest(t, handler, "private-password")
 	for _, path := range []string{"/site/qr?campaign=vizitka", "/site/qr/code.png?campaign=vizitka"} {
 		r := httptest.NewRequest(http.MethodGet, "https://qoncept.example"+path, nil)
-		r.SetBasicAuth("owner", "private-password")
+		r.AddCookie(cookie)
 		w := httptest.NewRecorder()
 		handler.ServeHTTP(w, r)
 		if w.Code != 200 {

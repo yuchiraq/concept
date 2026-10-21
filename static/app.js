@@ -1,4 +1,5 @@
 (() => {
+ const tr = window.qonceptText || (text => text);
  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
  const root = document.documentElement;
  const onMediaChange = (query, handler) => {
@@ -68,7 +69,7 @@
    else topnav.removeAttribute('aria-hidden');
    if (navToggle) {
     navToggle.setAttribute('aria-expanded', String(!collapsed));
-    navToggle.setAttribute('aria-label', collapsed ? 'Показать навигацию' : 'Скрыть навигацию');
+    navToggle.setAttribute('aria-label', collapsed ? tr('Показать навигацию') : tr('Скрыть навигацию'));
    }
   };
   const updateNav = () => {
@@ -208,7 +209,7 @@
     link.target = '_blank';
    }
    const icon = link.querySelector('.icon-arrow')?.cloneNode(true);
-   link.replaceChildren(document.createTextNode(sourceLink?.dataset.label || (isWorkService ? 'Обсудить свой сервис' : 'Открыть сайт')));
+   link.replaceChildren(document.createTextNode(sourceLink?.dataset.label || (isWorkService ? tr('Обсудить свой сервис') : tr('Открыть сайт'))));
    if (icon) link.append(icon);
   }
   if (!projectDialog.open) projectDialog.showModal();
@@ -223,10 +224,10 @@
   if (!artworks.length || !lightboxImage) return;
   current = (index + artworks.length) % artworks.length;
   const art = artworks[current];
-  const title = art.dataset.title || 'Авторская работа';
+  const title = art.dataset.title || tr('Авторская работа');
   lightboxImage.src = art.dataset.art;
   lightboxImage.alt = `${title} — Chiraq Concept`;
-  if (lightboxCaption) lightboxCaption.textContent = `${title} / Chiraq Concept · ${current + 1} из ${artworks.length}`;
+  if (lightboxCaption) lightboxCaption.textContent = `${title} / Chiraq Concept · ${current + 1} ${tr('из')} ${artworks.length}`;
  }
  if (lightbox && lightboxImage && artworks.length) {
   artworks.forEach((art, index) => art.addEventListener('click', () => { showArt(index); if (!lightbox.open) lightbox.showModal(); }));

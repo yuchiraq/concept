@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"html/template"
 	"net/http"
 	"net/url"
 	"os"
@@ -166,15 +165,20 @@ type qrDateRow struct {
 	Scans uint64
 }
 type qrDashboard struct {
+	LocaleData
 	Origin, Campaign, TrackingURL, LastScan string
 	Total, Today, Leads                     uint64
 	Campaigns                               []qrCampaignRow
 	Dates                                   []qrDateRow
 	TelegramReady                           bool
+	CSRF                                    string
 }
 
 func (f *siteFeatures) registerQR(mux *http.ServeMux, origin func(*http.Request) string) error {
-	dashboard, err := template.ParseFiles("templates/qr.html")
+	if err := f.registerOwnerAuth(mux); err != nil {
+		return err
+	}
+	dashboard, err := localizedTemplates("templates/qr.html")
 	if err != nil {
 		return err
 	}
@@ -187,7 +191,7 @@ func (f *siteFeatures) registerQR(mux *http.ServeMux, origin func(*http.Request)
 		campaign := normalizeCampaign(r.URL.Query().Get("campaign"))
 		if r.Method == http.MethodGet {
 			if f.tracker.record(campaign, false) != nil {
-				http.Error(w, "Не удалось учесть переход. Попробуйте ещё раз.", 503)
+				http.Error(w, translate(languageFromRequest(r), "Не удалось учесть переход. Попробуйте ещё раз."), 503)
 				return
 			}
 		}
@@ -205,6 +209,12 @@ func (f *siteFeatures) registerQR(mux *http.ServeMux, origin func(*http.Request)
 		stats := f.tracker.snapshot()
 		campaign := normalizeCampaign(r.URL.Query().Get("campaign"))
 		data := qrDashboard{Origin: origin(r), Campaign: campaign, TrackingURL: origin(r) + "/qr?campaign=" + url.QueryEscape(campaign), LastScan: "Переходов пока нет", Total: stats.Total, Leads: stats.Leads, Today: stats.ByDate[f.tracker.now().In(minskZone).Format("2006-01-02")], TelegramReady: f.telegram.ready()}
+		lang := languageFromRequest(r)
+		data.LocaleData = localeData(lang, "/site/qr", origin(r))
+		data.LastScan = translate(lang, data.LastScan)
+		if session, ok := f.ownerSessionFor(r); ok {
+			data.CSRF = session.CSRF
+		}
 		if when, err := time.Parse(time.RFC3339, stats.LastScanAt); err == nil {
 			data.LastScan = when.In(minskZone).Format("02.01.2006 15:04")
 		}
@@ -225,8 +235,8 @@ func (f *siteFeatures) registerQR(mux *http.ServeMux, origin func(*http.Request)
 			data.Dates = data.Dates[:30]
 		}
 		var output bytes.Buffer
-		if err := dashboard.ExecuteTemplate(&output, "qr", data); err != nil {
-			http.Error(w, "Не удалось загрузить статистику", 500)
+		if err := dashboard[lang].ExecuteTemplate(&output, "qr", data); err != nil {
+			http.Error(w, translate(languageFromRequest(r), "Не удалось загрузить статистику"), 500)
 			return
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -241,7 +251,7 @@ func (f *siteFeatures) registerQR(mux *http.ServeMux, origin func(*http.Request)
 		trackingURL := origin(r) + "/qr?campaign=" + url.QueryEscape(campaign)
 		png, err := qrcode.Encode(trackingURL, qrcode.Medium, 768)
 		if err != nil {
-			http.Error(w, "Не удалось создать QR-код", 500)
+			http.Error(w, translate(languageFromRequest(r), "Не удалось создать QR-код"), 500)
 			return
 		}
 		w.Header().Set("Content-Type", "image/png")

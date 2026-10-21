@@ -140,12 +140,14 @@ func TestCrawlerRoutes(t *testing.T) {
 	if err := xml.Unmarshal(w.Body.Bytes(), &document); err != nil {
 		t.Fatal(err)
 	}
-	if document.XMLName.Space != "http://www.sitemaps.org/schemas/sitemap/0.9" || len(document.URLs) != len(pages()) {
+	if document.XMLName.Space != "http://www.sitemaps.org/schemas/sitemap/0.9" || len(document.URLs) != len(pages())*len(languages) {
 		t.Fatalf("invalid sitemap: %#v", document)
 	}
 	for i, page := range pages() {
-		if got := document.URLs[i].Location; got != "https://qoncept.example"+page.ActivePath {
-			t.Errorf("sitemap location = %q", got)
+		for j, lang := range languages {
+			if got := document.URLs[i*len(languages)+j].Location; got != "https://qoncept.example"+localizedURL(lang, page.ActivePath) {
+				t.Errorf("sitemap location = %q", got)
+			}
 		}
 	}
 	if got := w.Header().Get("Content-Type"); got != "application/xml; charset=utf-8" {
