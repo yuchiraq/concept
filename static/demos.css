@@ -1,0 +1,166 @@
+/* Small, self-contained project previews. */
+[data-demo] [hidden] { display:none !important; }
+[data-demo] button { font:inherit; cursor:pointer; touch-action:manipulation; }
+[data-demo] button:focus-visible { outline:2px solid #c3aaed; outline-offset:2px; }
+.site-demo:focus-within,.project-card:hover .site-demo { transform:translateY(0) rotate(0); }
+.site-demo .avs-nav { padding:7px 12px; gap:8px; }
+.site-demo .avs-nav strong { font-size:9px; letter-spacing:.2px; }
+.avs-nav nav { display:flex; gap:1px; }
+.avs-nav button { color:#d4dae0; border:0; background:none; padding:9px 5px; font-size:8px; border-radius:3px; }
+.avs-nav button:hover,.avs-nav button[aria-pressed="true"] { color:#ffbd49; background:#ffffff0a; }
+.avs-copy .avs-cta { display:inline-flex; align-items:center; gap:12px; padding:10px 12px; background:#ffb521; border:0; color:#161c22; font-size:8px; font-weight:800; border-radius:2px; transition:background .2s; }
+.avs-copy .avs-cta:hover { background:#ffd078; }
+.avs-inner { padding-top:22px; }
+.avs-inner h3 { font-size:25px; }
+.avs-copy .avs-kicker { display:block; margin-bottom:10px; color:#cad2da; background:none; padding:0; font-size:8px; font-weight:400; }
+.avs-service-list { display:grid; gap:7px; margin:13px 0; font-size:9px; }
+.avs-service-list span { display:flex; gap:7px; align-items:center; }
+.avs-service-list span:before { content:''; width:3px; height:3px; background:#ffb521; border-radius:50%; }
+.avs-contact-card { border-left:2px solid #ffb521; padding:5px 12px; display:grid; gap:6px; background:#07121b55; max-width:240px; }
+.avs-contact-card span { font-size:8px; color:#ffce6d; }
+.avs-contact-card strong { font-size:10px; }
+.avs-contact-card small { font-size:7px; color:#c2cbd4; }
+.avs-copy:not([hidden]),.app-panel:not([hidden]) { animation:demo-appear .22s ease-out; }
+@keyframes demo-appear { from { opacity:.4; transform:translateY(4px); } to { opacity:1; transform:none; } }
+
+.service-demo { position:relative; width:100%; height:322px; max-width:600px; margin:0 auto; }
+.service-demo .app-mockup { position:absolute; left:0; bottom:0; width:calc(100% - 76px); height:316px; transform:translateY(14px) rotate(-3deg); border-radius:8px; }
+.project-card:hover .service-demo .app-mockup,.service-demo:focus-within .app-mockup { transform:translateY(0) rotate(0); }
+.service-demo .app-mockup aside { width:100px; padding:16px 10px 12px; gap:10px; }
+.service-demo .app-mockup aside > strong { font-size:9px; margin:0 0 7px; }
+.service-demo .app-mockup aside > small { font-size:6px; line-height:1.5; }
+.app-mockup aside nav { display:grid; width:100%; gap:3px; }
+.app-mockup aside button { display:flex; align-items:center; gap:7px; width:100%; min-height:31px; text-align:left; border:0; border-radius:4px; padding:7px 6px; color:#bcc2d0; background:none; font-size:8px; }
+.app-mockup aside button:hover { background:#ffffff08; }
+.app-mockup aside button[aria-pressed="true"] { color:#e3d9ff; background:#a78be127; }
+.demo-nav-dot { width:7px; height:7px; border:1px solid currentColor; border-radius:2px; opacity:.7; }
+.service-demo .app-main { padding:14px; }
+.service-demo .app-toolbar { padding-bottom:10px; font-size:7px; }
+.app-toolbar > i { width:6px; height:6px; border-radius:50%; background:#88b7a0; }
+.app-panel { color:#252737; }
+.app-panel .demo-overline { color:#7d748c; font-size:6px; letter-spacing:.8px; text-transform:uppercase; margin:14px 0 6px; }
+.service-demo .app-panel h3 { font-size:16px; line-height:1.25; letter-spacing:-.5px; margin:0 0 6px; }
+.app-panel .demo-subtitle { font-size:7px; line-height:1.5; color:#777884; margin:0 0 13px; }
+.demo-summary { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.demo-summary > button { min-width:0; text-align:left; border:1px solid #e5e3ec; background:#fff; border-radius:6px; padding:9px; transition:border-color .2s,background .2s; }
+.demo-summary > button:hover { background:#faf7ff; border-color:#b9a1d9; }
+.demo-summary strong,.demo-summary small { display:block; }
+.demo-summary strong { font-size:8px; margin:5px 0 4px; }
+.demo-summary small { font-size:6px; color:#7d7a89; line-height:1.4; }
+.demo-tile-icon { display:block; width:18px; height:18px; color:#9a79bf; }
+.demo-tile-icon svg { display:block; width:100%; height:100%; }
+.demo-task-list { margin-top:12px; border:1px solid #e5e3ec; background:white; border-radius:6px; padding:9px; }
+.demo-list-label { display:block; font-size:7px; font-weight:600; margin-bottom:6px; }
+.demo-task-list > div { display:flex; align-items:center; gap:6px; padding:6px 0; font-size:7px; }
+.demo-task-list small,.demo-records small { display:block; font-size:6px; margin-top:4px; line-height:1.4; color:#85828f; }
+.demo-status-dot { display:block; width:5px; height:5px; border-radius:50%; flex-shrink:0; background:#9a79bf; }
+.demo-status-dot.is-pale { background:#d3c7e5; }
+.demo-total { padding:11px; border:1px solid #e5e3ec; border-radius:6px; background:#fff; }
+.demo-total > span { display:block; font-size:7px; color:#777482; }
+.demo-total > strong { display:block; font-size:27px; line-height:1.2; font-weight:600; margin:7px 0; letter-spacing:-1px; }
+.demo-total > strong small { font-size:11px; font-weight:400; color:#8a7f99; }
+.demo-meter { height:4px; background:#ede6f6; border-radius:4px; overflow:hidden; }
+.demo-meter i { display:block; width:68%; height:100%; background:#aa87cf; border-radius:4px; }
+.demo-records { margin-top:8px; padding:0 9px; border:1px solid #e5e3ec; border-radius:6px; background:#fff; }
+.demo-records > div { display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:7px; padding:10px 0; }
+.demo-records > div + div { border-top:1px solid #efedf3; }
+.demo-records strong { font-size:9px; white-space:nowrap; }
+.demo-stock { display:flex; gap:6px; margin-bottom:10px; }
+.demo-stock > span { padding:8px; border-radius:5px; background:#eae5f3; font-size:7px; white-space:nowrap; }
+.demo-stock strong { margin-left:4px; font-weight:600; }
+.demo-tag { font-size:5px; padding:4px; font-weight:500; background:#eee7f7; color:#8662a6; border-radius:3px; white-space:nowrap; }
+.demo-tag.is-available { background:#e4f0e9; color:#497c60; }
+
+.phone-mockup { position:absolute; z-index:2; right:0; bottom:15px; width:128px; height:267px; padding:22px 6px 18px; border:4px solid #262530; border-radius:23px; box-shadow:0 17px 40px #0005,inset 0 0 0 1px #d8d4df; background:#f7f6fa; color:#252737; transform:rotate(4deg); transition:transform .65s cubic-bezier(.2,.8,.2,1); display:flex; flex-direction:column; }
+.project-card:hover .phone-mockup,.service-demo:focus-within .phone-mockup { transform:rotate(0); }
+.phone-camera { position:absolute; top:6px; left:50%; transform:translateX(-50%); width:34px; height:8px; background:#262530; border-radius:8px; }
+.phone-brand { display:flex; align-items:center; gap:4px; padding:0 2px 8px; border-bottom:1px solid #e5e3ec; }
+.phone-brand strong { font-size:7px; font-weight:700; }
+.phone-content { flex:1; min-height:0; overflow:hidden; }
+.phone-content .demo-overline { margin-top:8px; font-size:5px; letter-spacing:.4px; }
+.service-demo .phone-content h3 { font-size:12px; letter-spacing:-.3px; margin-bottom:5px; }
+.phone-content .demo-subtitle { display:none; }
+.phone-content .demo-summary { gap:4px; }
+.phone-content .demo-summary > button { padding:5px 4px; }
+.phone-content .demo-tile-icon { width:13px; height:13px; }
+.phone-content .demo-summary strong { font-size:6px; margin:5px 0 2px; }
+.phone-content .demo-summary small { font-size:4.5px; }
+.phone-content .demo-task-list { padding:5px; margin-top:7px; }
+.phone-content .demo-list-label { font-size:5px; margin-bottom:3px; }
+.phone-content .demo-task-list > div { font-size:5px; padding:4px 0; }
+.phone-content .demo-task-list small,.phone-content .demo-records small { font-size:4.5px; margin-top:2px; }
+.phone-content [data-demo-panel="overview"] .demo-task-list > div:last-child { display:none; }
+.phone-content .demo-total { padding:6px; }
+.phone-content .demo-total > span { font-size:5px; }
+.phone-content .demo-total > strong { font-size:22px; line-height:1.1; margin:5px 0; }
+.phone-content .demo-total > strong small { font-size:9px; }
+.phone-content .demo-records { padding:0 6px; margin-top:6px; }
+.phone-content .demo-records > div { padding:5px 0; font-size:5px; gap:3px; }
+.phone-content .demo-records strong { font-size:7px; }
+.phone-content .demo-stock { gap:3px; margin-bottom:6px; }
+.phone-content .demo-stock > span { font-size:5px; padding:5px 4px; }
+.phone-content .demo-stock strong { margin-left:2px; }
+.phone-content .demo-tag { font-size:4px; padding:3px; }
+.phone-nav { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; padding-top:5px; border-top:1px solid #e5e3ec; background:#f7f6fa; }
+.phone-nav button { padding:8px 0; font-size:5px; border:0; color:#88808e; background:none; border-radius:4px; }
+.phone-nav button[aria-pressed="true"] { background:#eae2f3; color:#71508d; }
+.phone-nav button:hover { color:#71508d; background:#f0ebf6; }
+.phone-home { position:absolute; bottom:6px; left:50%; transform:translateX(-50%); width:35px; height:3px; background:#3b3544; border-radius:4px; }
+.workservice .project-open { bottom:14px; right:auto; left:16px; width:30px; height:30px; font-size:16px; }
+
+@media (max-width:1100px) and (min-width:761px) {
+ .service-demo { height:285px; }
+ .service-demo .app-mockup { width:calc(100% - 65px); height:305px; }
+ .service-demo .app-mockup aside { width:78px; padding:13px 7px; }
+ .service-demo .app-mockup aside > strong { font-size:7px; }
+ .app-mockup aside button { font-size:7px; gap:5px; padding-inline:4px; }
+ .service-demo .app-main { padding:10px; }
+ .service-demo .app-panel h3 { font-size:13px; }
+ .demo-summary > button { padding:6px; }
+ .phone-mockup { width:112px; height:274px; right:-6px; bottom:8px; }
+ .demo-stock > span { font-size:6px; padding:6px; }
+}
+@media (max-width:760px) {
+ .workservice .project-visual { height:380px; padding:55px 18px 0; }
+ .service-demo { height:310px; max-width:430px; }
+ .service-demo .app-mockup { width:calc(100% - 101px); height:300px; margin:0; }
+ .service-demo .app-mockup aside { width:67px; padding:14px 6px; gap:10px; }
+ .service-demo .app-mockup aside > strong { font-size:7px; }
+ .service-demo .app-main { padding:9px; }
+ .app-mockup aside button { font-size:6px; min-height:32px; padding:6px 3px; gap:4px; }
+ .service-demo .app-panel h3 { font-size:11px; letter-spacing:-.3px; }
+ .service-demo .phone-content h3 { font-size:11px; }
+ .phone-mockup { width:115px; height:265px; right:-4px; bottom:16px; }
+ .demo-summary > button { padding:7px 5px; }
+ .demo-stock { gap:4px; flex-wrap:wrap; }
+ .demo-stock > span { font-size:6px; padding:6px; }
+ .site-demo .avs-nav { padding:6px 9px; gap:4px; }
+ .site-demo .avs-nav strong { font-size:8px; }
+ .avs-nav button { font-size:7px; padding:9px 4px; }
+ .avs-inner { padding-top:16px; }
+ .avs-inner h3 { font-size:22px; }
+}
+@media (max-width:370px) {
+ .service-demo .app-mockup { width:calc(100% - 84px); }
+ .service-demo .app-mockup aside { width:60px; padding-inline:4px; }
+ .service-demo .app-main { padding:7px; }
+ .service-demo .app-panel h3 { font-size:10px; }
+ .service-demo .app-main .demo-subtitle { display:none; }
+ .service-demo .app-main .demo-overline { font-size:5px; }
+ .service-demo .app-main .app-toolbar { font-size:5.5px; white-space:nowrap; }
+ .service-demo .app-main .demo-total { padding:8px; }
+ .service-demo .app-main .demo-total > span { font-size:6px; }
+ .service-demo .app-main .demo-total > strong { font-size:24px; }
+ .service-demo .app-main .demo-records { padding-inline:6px; }
+ .service-demo .app-main .demo-records > div { font-size:6px; padding-block:8px; }
+ .service-demo .app-main .demo-records small { font-size:5px; }
+ .phone-mockup { width:100px; padding-inline:4px; }
+ .service-demo .phone-content h3 { font-size:10px; }
+ .demo-summary small { font-size:5px; }
+ .site-demo .avs-nav strong { font-size:7px; }
+ .avs-nav button { font-size:6px; padding-inline:3px; }
+}
+@media (prefers-reduced-motion:reduce) {
+ .avs-copy:not([hidden]),.app-panel:not([hidden]) { animation:none; }
+ .service-demo .app-mockup,.phone-mockup,.site-demo { transition:none; }
+}

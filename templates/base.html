@@ -1,12 +1,62 @@
 {{define "base"}}
-<!DOCTYPE html><html lang="ru" data-theme="dark"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{.MetaTitle}}</title><meta name="description" content="{{.MetaDescription}}"><meta name="theme-color" content="#101112"><meta property="og:title" content="{{.MetaTitle}}"><meta property="og:description" content="{{.MetaDescription}}"><meta property="og:type" content="website">
-<link rel="icon" href="/static/logos/logow.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script>try{document.documentElement.dataset.theme=localStorage.getItem('qoncept-theme')||'dark'}catch(e){}</script><link rel="stylesheet" href="/static/styles.css"></head>
-<body class="{{.PageClass}}"><a class="skip-link" href="#main">К содержимому</a>
-<header class="topbar"><a class="brand" href="/" aria-label="by Qoncept — главная"><img src="/static/logos/logow.svg" width="38" height="32" alt=""><span>by Qoncept<span class="brand-dot">®</span></span></a><nav class="topnav" aria-label="Основная навигация"><a href="/" {{if eq .ActivePath "/"}}aria-current="page"{{end}}>Главная</a><a href="/websites" {{if eq .ActivePath "/websites"}}aria-current="page"{{end}}>Сайты</a><a href="/design" {{if eq .ActivePath "/design"}}aria-current="page"{{end}}>Дизайн</a><a href="/#about">Обо мне</a></nav><div class="nav-actions"><button class="theme-toggle" aria-label="Переключить цветовую тему" title="Переключить тему">◐</button><a class="button button-small magnetic" href="https://t.me/yu_cq162" target="_blank" rel="noopener noreferrer"><span>Обсудим проект</span><span class="arrow">↗</span></a></div></header>
-<main id="main">{{template "content" .}}</main>{{template "contact" .}}
-<footer class="footer"><a href="/" class="footer-brand">by Qoncept®</a><span>Дизайн с характером. Разработка со смыслом.</span><span>© {{.Year}}</span><a href="#main">Наверх ↑</a></footer>
-<dialog class="project-dialog" id="project-dialog" aria-labelledby="dialog-title"><button class="dialog-close" aria-label="Закрыть">×</button><p class="eyebrow" id="dialog-category"></p><h2 id="dialog-title"></h2><p id="dialog-description"></p><ul id="dialog-details"></ul><a class="button button-primary" id="dialog-link" target="_blank" rel="noopener noreferrer">Открыть сайт ↗</a></dialog>
-<dialog class="lightbox" id="lightbox" aria-label="Просмотр работы"><button class="dialog-close" aria-label="Закрыть">×</button><button class="lightbox-prev" aria-label="Предыдущая работа">←</button><figure><img id="lightbox-image" alt=""><figcaption id="lightbox-caption"></figcaption></figure><button class="lightbox-next" aria-label="Следующая работа">→</button></dialog><script src="/static/app.js" defer></script></body></html>{{end}}
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.MetaTitle}}</title>
+  <meta name="description" content="{{.MetaDescription}}">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-video-preview:-1">
+  <meta name="author" content="by Qoncept / Chiraq Concept">
+  <meta name="theme-color" content="#101112">
+  <link rel="canonical" href="{{.CanonicalURL}}">
+  <meta property="og:title" content="{{.MetaTitle}}">
+  <meta property="og:description" content="{{.MetaDescription}}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="by Qoncept">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:url" content="{{.CanonicalURL}}">
+  <meta property="og:image" content="{{.OGImage}}">
+  <meta property="og:image:alt" content="Авторская 3D-обложка Chiraq Concept">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{.MetaTitle}}">
+  <meta name="twitter:description" content="{{.MetaDescription}}">
+  <meta name="twitter:image" content="{{.OGImage}}">
+  <link rel="icon" href="/static/logos/logow.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="/static/theme.js"></script>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/demos.css">
+  <script type="application/ld+json">{{.StructuredData}}</script>
+</head>
+<body class="{{.PageClass}}">
+  <a class="skip-link" href="#main">К содержимому</a>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="by Qoncept — главная"><img src="/static/logos/logow.svg" width="38" height="32" alt=""><span>by Qoncept<span class="brand-dot">®</span></span></a>
+    <nav class="topnav" id="primary-nav" aria-label="Основная навигация">
+      <a href="/" {{if eq .ActivePath "/"}}aria-current="page"{{end}}>Главная</a>
+      <a href="/websites" {{if eq .ActivePath "/websites"}}aria-current="page"{{end}}>Сайты</a>
+      <a href="/design" {{if eq .ActivePath "/design"}}aria-current="page"{{end}}>Дизайн</a>
+      <a href="/#services">Услуги</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="button button-small magnetic" href="#contacts" data-open-contact><span>Обсудить проект</span><span class="arrow">{{template "arrow-up-right"}}</span></a>
+      <button class="nav-toggle" type="button" aria-label="Скрыть навигацию" aria-controls="primary-nav" aria-expanded="true"><span></span><span></span></button>
+    </div>
+  </header>
+  <main id="main">{{template "content" .}}</main>
+  {{template "contact" .}}
+  <footer class="footer"><a href="/" class="footer-brand">by Qoncept®</a><span>Сайты, сервисы и дизайн для ваших задач.</span><span>© {{.Year}}</span><a href="#main">Наверх {{template "arrow-up"}}</a></footer>
+  <dialog class="project-dialog" id="project-dialog" aria-labelledby="dialog-title">
+    <button class="dialog-close" aria-label="Закрыть">×</button><p class="eyebrow" id="dialog-category"></p><h2 id="dialog-title"></h2><p id="dialog-description"></p><ul id="dialog-details"></ul><a class="button button-primary" id="dialog-link" target="_blank" rel="noopener noreferrer">Обсудить проект {{template "arrow-up-right"}}</a>
+  </dialog>
+  <dialog class="lightbox" id="lightbox" aria-label="Просмотр работы"><button class="dialog-close" aria-label="Закрыть">×</button><button class="lightbox-prev" aria-label="Предыдущая работа">{{template "arrow-left"}}</button><figure><img id="lightbox-image" alt=""><figcaption id="lightbox-caption"></figcaption></figure><button class="lightbox-next" aria-label="Следующая работа">{{template "arrow-right"}}</button></dialog>
+  {{template "contact-form" .}}
+  <script src="/static/app.js" defer></script>
+  <script src="/static/demos.js" defer></script>
+  <script src="/static/contact.js" defer></script>
+</body>
+</html>
+{{end}}

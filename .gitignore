@@ -21,3 +21,10 @@ coverage.out
 *.dll
 *.so
 *.dylib
+
+# Private server settings and runtime statistics
+settings.json
+.env
+.env.*
+!*.example
+data/

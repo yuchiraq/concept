@@ -1,0 +1,10 @@
+{
+  "telegram": {
+    "botToken": "",
+    "chatIds": []
+  },
+  "qr": {
+    "adminPassword": "",
+    "statsPath": "data/qr_stats.json"
+  }
+}

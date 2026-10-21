@@ -1,0 +1,52 @@
+{{define "avs-demo"}}
+<div class="browser-mockup site-demo" data-demo="avayusstroi" role="group" aria-label="Интерактивный пример сайта АВАЮССТРОЙ">
+  <div class="browser-bar"><span aria-hidden="true">● ● ●</span><span>avayusstroi.by</span><span>{{template "arrow-up-right"}}</span></div>
+  <div class="avs-screen">
+    <div class="avs-nav"><strong>АВАЮССТРОЙ</strong><nav aria-label="Меню примера сайта">
+      <button type="button" data-demo-view="home" aria-pressed="true">Главная</button>
+      <button type="button" data-demo-view="services" aria-pressed="false">Услуги</button>
+      <button type="button" data-demo-view="rental" aria-pressed="false">Аренда</button>
+      <button type="button" data-demo-view="contact" aria-pressed="false">Контакты</button>
+    </nav></div>
+    <div class="avs-copy" data-demo-panel="home"><h3>АВТОНОМНАЯ<br>КАНАЛИЗАЦИЯ<br><em>ПОД КЛЮЧ</em></h3><p>Инженерные решения для вашего дома</p><button class="avs-cta" type="button" data-demo-view="contact">Рассчитать стоимость {{template "arrow-up-right"}}</button></div>
+    <div class="avs-copy avs-inner" data-demo-panel="services" hidden><span class="avs-kicker">Решения для вашего участка</span><h3>ОТ ЗАДАЧИ<br><em>ДО МОНТАЖА</em></h3><div class="avs-service-list"><span>Автономная канализация</span><span>Земляные работы</span><span>Благоустройство участка</span></div><button class="avs-cta" type="button" data-demo-view="contact">Подобрать решение {{template "arrow-up-right"}}</button></div>
+    <div class="avs-copy avs-inner" data-demo-panel="rental" hidden><span class="avs-kicker">Техника для ваших задач</span><h3>АРЕНДА<br><em>СПЕЦТЕХНИКИ</em></h3><p>Подбор техники под объём работ<br>и условия на вашем объекте.</p><button class="avs-cta" type="button" data-demo-view="contact">Уточнить условия {{template "arrow-up-right"}}</button></div>
+    <div class="avs-copy avs-inner" data-demo-panel="contact" hidden><span class="avs-kicker">Начнём с вашей задачи</span><h3>ОБСУДИМ<br><em>ВАШ ПРОЕКТ</em></h3><p>Вид работ, особенности участка и сроки.<br>Всё важное для точного расчёта.</p><div class="avs-contact-card"><span>Заявка на расчёт</span><strong>Подбор решения и консультация</strong><small>Пример страницы контактов</small></div></div>
+  </div>
+</div>
+{{end}}
+
+{{define "workservice-demo"}}
+<div class="service-demo" data-demo="workservice" role="group" aria-label="Интерактивный пример WorkService на компьютере и телефоне">
+  <div class="app-mockup">
+    <aside><img src="/static/images/projects/workservice-logo.png" width="27" height="27" alt=""><strong>WorkService</strong>
+      <nav aria-label="Меню WorkService на компьютере">
+        <button type="button" data-demo-view="overview" aria-pressed="true"><i class="demo-nav-dot" aria-hidden="true"></i>Обзор</button>
+        <button type="button" data-demo-view="tasks" aria-pressed="false"><i class="demo-nav-dot" aria-hidden="true"></i>Задачи</button>
+        <button type="button" data-demo-view="fuel" aria-pressed="false"><i class="demo-nav-dot" aria-hidden="true"></i>Топливо</button>
+        <button type="button" data-demo-view="inventory" aria-pressed="false"><i class="demo-nav-dot" aria-hidden="true"></i>Инвентарь</button>
+      </nav><small>Демонстрационные данные</small>
+    </aside>
+    <div class="app-main"><div class="app-toolbar"><span>Рабочее пространство</span><i aria-hidden="true"></i></div>{{template "workservice-panels"}}</div>
+  </div>
+  <div class="phone-mockup" role="group" aria-label="Мобильная версия WorkService">
+    <div class="phone-camera" aria-hidden="true"></div><div class="phone-brand"><img src="/static/images/projects/workservice-logo.png" width="14" height="14" alt=""><strong>WorkService</strong></div>
+    <div class="phone-content">{{template "workservice-panels"}}</div>
+    <nav class="phone-nav" aria-label="Меню WorkService на телефоне"><button type="button" data-demo-view="overview" aria-pressed="true">Обзор</button><button type="button" data-demo-view="fuel" aria-pressed="false">Топливо</button><button type="button" data-demo-view="inventory" aria-pressed="false">Инвентарь</button></nav>
+    <div class="phone-home" aria-hidden="true"></div>
+  </div>
+</div>
+{{end}}
+
+{{define "workservice-panels"}}
+  <div class="app-panel" data-demo-panel="overview"><p class="demo-overline">Сегодня в работе</p><h3>Всё под контролем.</h3><p class="demo-subtitle">Команда, техника и объекты.</p>
+    <div class="demo-summary"><button type="button" data-demo-view="fuel"><span class="demo-tile-icon" aria-hidden="true">{{template "fuel-icon"}}</span><strong>Топливо</strong><small>Заправки и расход</small></button><button type="button" data-demo-view="inventory"><span class="demo-tile-icon" aria-hidden="true">{{template "inventory-icon"}}</span><strong>Инвентарь</strong><small>Выдача и остатки</small></button></div>
+    <div class="demo-task-list"><span class="demo-list-label">Ближайшие задачи</span><div><i class="demo-status-dot" aria-hidden="true"></i><span>Подготовить технику<small>Участок № 1 · 09:00</small></span></div><div><i class="demo-status-dot is-pale" aria-hidden="true"></i><span>Выдать инструмент<small>Склад · 10:30</small></span></div></div>
+  </div>
+  <div class="app-panel" data-demo-panel="tasks" hidden><p class="demo-overline">Рабочий день</p><h3>Задачи команды</h3><p class="demo-subtitle">Ответственные и сроки в одном месте.</p><div class="demo-task-list"><span class="demo-list-label">На сегодня · 3 задачи</span><div><i class="demo-status-dot" aria-hidden="true"></i><span>Подготовить технику<small>Алексей · 09:00</small></span></div><div><i class="demo-status-dot" aria-hidden="true"></i><span>Выдать инструмент<small>Склад · 10:30</small></span></div><div><i class="demo-status-dot is-pale" aria-hidden="true"></i><span>Принять материалы<small>Участок № 2 · 14:00</small></span></div></div></div>
+  <div class="app-panel" data-demo-panel="fuel" hidden><p class="demo-overline">Техника и расходы</p><h3>Учёт топлива</h3><p class="demo-subtitle">Каждая заправка под контролем.</p><div class="demo-total"><span>Заправлено за день</span><strong>145 <small>л</small></strong><div class="demo-meter"><i></i></div></div><div class="demo-records"><div><span>Экскаватор<small>Участок № 1 · ДТ</small></span><strong>80 л</strong></div><div><span>Самосвал<small>Участок № 2 · ДТ</small></span><strong>65 л</strong></div></div></div>
+  <div class="app-panel" data-demo-panel="inventory" hidden><p class="demo-overline">Склад и выдача</p><h3>Инвентарь</h3><p class="demo-subtitle">Понятно, что есть и у кого находится.</p><div class="demo-stock"><span><i aria-hidden="true"></i>На складе <strong>8</strong></span><span>Выдано <strong>4</strong></span></div><div class="demo-records"><div><span>Перфоратор<small>У Алексея · участок № 1</small></span><b class="demo-tag">Выдан</b></div><div><span>Нивелир<small>Готов к выдаче</small></span><b class="demo-tag is-available">На складе</b></div><div><span>Генератор<small>Участок № 2</small></span><b class="demo-tag">Выдан</b></div></div></div>
+{{end}}
+
+{{define "fuel-icon"}}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 20V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v15M3 20h14M6 7h8M15 10h2a2 2 0 0 1 2 2v4a1 1 0 0 0 2 0V7l-3-3"/></svg>{{end}}
+{{define "inventory-icon"}}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m3 7 9-4 9 4v10l-9 4-9-4V7Zm0 0 9 4 9-4M12 11v10M7.5 5l9 4v5"/></svg>{{end}}

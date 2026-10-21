@@ -1,0 +1,33 @@
+{{define "contact-form"}}
+<dialog class="lead-dialog" id="lead-dialog" aria-labelledby="lead-title">
+  <button class="dialog-close" type="button" aria-label="Закрыть форму">×</button>
+  <div class="lead-layout">
+    <aside class="lead-sidebar">
+      <p class="eyebrow">Давайте начнём</p><h2 id="lead-title">Обсудим<br> ваш проект.</h2>
+      <p>Расскажите о задаче и оставьте контакт. Я свяжусь с вами, чтобы уточнить детали и предложить решение.</p>
+      <ul><li>Понятный состав работ</li><li>Стоимость и сроки до старта</li><li>Удобный способ оплаты</li></ul>
+      <button class="lead-contacts-toggle" type="button" aria-expanded="false" aria-controls="lead-contacts">Мои контакты {{template "arrow-down"}}</button>
+      <div class="lead-contacts" id="lead-contacts" hidden>
+        <a href="https://t.me/yu_cq162" target="_blank" rel="noopener noreferrer">Telegram <span>@yu_cq162 {{template "arrow-up-right"}}</span></a>
+        <a href="mailto:chiraqconcept@icloud.com">Email <span>chiraqconcept@icloud.com {{template "arrow-up-right"}}</span></a>
+        <a href="https://instagram.com/chiraqconcept162" target="_blank" rel="noopener noreferrer">Instagram <span>@chiraqconcept162 {{template "arrow-up-right"}}</span></a>
+      </div>
+    </aside>
+    <div class="lead-form-panel">
+      <form id="lead-form" action="/api/contact" method="post">
+        <p class="eyebrow">Оставить заявку</p>
+        <div class="lead-field"><label for="lead-name">Как вас зовут</label><input id="lead-name" name="name" autocomplete="name" placeholder="Ваше имя" required minlength="2" maxlength="80"></div>
+        <fieldset class="lead-channel"><legend>Как удобнее связаться</legend><div class="lead-channel-options"><label><input type="radio" name="contactMethod" value="telegram" checked><span>Telegram</span></label><label><input type="radio" name="contactMethod" value="phone"><span>Телефон</span></label><label><input type="radio" name="contactMethod" value="email"><span>Email</span></label></div></fieldset>
+        <div class="lead-field"><label for="lead-contact" id="lead-contact-label">Ваш Telegram</label><input id="lead-contact" name="contact" autocomplete="off" placeholder="@username" required maxlength="200" aria-describedby="lead-contact-help"><small id="lead-contact-help">Укажите имя пользователя, чтобы я мог вам написать.</small></div>
+        <div class="lead-field"><label for="lead-service">Что хотите создать</label><select id="lead-service" name="service"><option value="unsure">Хочу обсудить идею</option><option value="website">Сайт для бизнеса</option><option value="software">Сервис или автоматизацию</option><option value="design">Дизайн или анимацию</option></select></div>
+        <div class="lead-field"><label for="lead-message">Пара слов о задаче <span>необязательно</span></label><textarea id="lead-message" name="message" rows="3" maxlength="1200" placeholder="Что нужно сделать? Есть ли желаемые сроки?"></textarea></div>
+        <div class="lead-honeypot" aria-hidden="true"><label for="lead-website">Ваш сайт</label><input id="lead-website" name="website" tabindex="-1" autocomplete="off"></div>
+        <p class="lead-status" id="lead-status" role="status" aria-live="polite" hidden></p>
+        <button class="button button-primary lead-submit" type="submit"><span>Отправить заявку</span>{{template "arrow-up-right"}}</button>
+        <p class="lead-privacy">Контакт нужен только для ответа на ваш запрос.</p>
+      </form>
+      <div class="lead-success" id="lead-success" hidden tabindex="-1"><span class="lead-success-mark" aria-hidden="true">✓</span><p class="eyebrow">Заявка отправлена</p><h3>Спасибо<br>за вашу идею.</h3><p>Я получил ваши контакты и свяжусь с вами, чтобы обсудить проект.</p><button type="button" class="button lead-done">Отлично {{template "arrow-up-right"}}</button></div>
+    </div>
+  </div>
+</dialog>
+{{end}}
