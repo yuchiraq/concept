@@ -15,6 +15,7 @@ import (
 )
 
 const contactURL = "https://t.me/yu_cq162"
+const productionOrigin = "https://qoncept.by"
 
 type Project struct {
 	ID, Number, Name, Category, Description, URL, Domain, Class string
@@ -31,6 +32,9 @@ type PageData struct {
 	Year                                                                            int
 	Projects                                                                        []Project
 	Artworks                                                                        []Artwork
+	Landing                                                                         *serviceLanding
+	ServiceLinks                                                                    []serviceLink
+	ContactService, BreadcrumbTitle                                                 string
 }
 
 func projects() []Project {
@@ -47,11 +51,23 @@ func artworks() []Artwork {
 }
 
 func pages() []PageData {
-	return []PageData{
+	base := []PageData{
 		{ActivePath: "/", PageClass: "page-home", MetaTitle: "Сайты, дизайн и веб-сервисы на заказ — by Qoncept", MetaDescription: "Дизайн и разработка сайтов, сервисов для бизнеса, обложек и наружной рекламы. Реальные работы by Qoncept / Chiraq Concept. Обсудим задачу, сроки и стоимость."},
 		{ActivePath: "/websites", PageClass: "page-web", MetaTitle: "Разработка сайтов и сервисов для бизнеса — by Qoncept", MetaDescription: "Сайты и программные решения под задачи бизнеса: автоматизация процессов, удобный контроль и меньше бумажной работы. Дизайн, разработка и запуск собственного сервиса.", Eyebrow: "Сайты и сервисы для бизнеса", HeroTitle: "От сайта до автоматизации бизнеса.", HeroText: "Создаю сайты и полноценные программные решения. Помогаю автоматизировать рутину, наладить удобный контроль и сократить бумажную волокиту. Разберём ваши процессы и разработаем систему, с которой проще работать."},
 		{ActivePath: "/design", PageClass: "page-design", MetaTitle: "Обложки, наружная реклама и анимация — Chiraq Concept", MetaDescription: "Дизайн обложек, 3D-арт, наружная реклама и анимация от Chiraq Concept / by Qoncept. Авторские работы и реальные примеры. Обсудим визуал для вашего проекта.", Eyebrow: "Chiraq Concept / Дизайн и анимация", HeroTitle: "Визуал, который привлекает внимание.", HeroText: "Обложки релизов, наружная реклама, 3D и анимация для вашего проекта. Разработаю образ и подготовлю материалы под нужные форматы: от экрана до печати."},
 	}
+	base[0].ContactService = "unsure"
+	base[0].MetaTitle = "Создание сайтов и разработка программ в Беларуси — by Qoncept"
+	base[0].MetaDescription = "Сайты для бизнеса, программы на заказ и автоматизация. Дизайн для компаний и макеты наружной рекламы. Беларусь и удалённо за рубежом. Оценка проекта."
+	base[1].ContactService, base[1].BreadcrumbTitle = "website", "Создание сайтов"
+	base[1].MetaTitle = "Создание сайтов в Беларуси — разработка под ключ | by Qoncept"
+	base[1].MetaDescription = "Разработка сайтов для бизнеса в Беларуси: лендинги и корпоративные сайты, дизайн, мобильная версия и формы заявок. Обсудим стоимость и сроки."
+	base[1].HeroTitle = "Создание сайтов для бизнеса в Беларуси."
+	base[1].HeroText = "Разрабатываю лендинги и корпоративные сайты: структура, дизайн, адаптация для телефона, формы заявок и подготовка к поисковому продвижению. Работаю с клиентами в Беларуси и удалённо в других странах."
+	base[2].ContactService, base[2].BreadcrumbTitle = "design", "Дизайн и обложки"
+	base[2].MetaTitle = "Дизайн для бизнеса, обложки и наружная реклама — by Qoncept"
+	base[2].MetaDescription = "Дизайн для компаний, обложки, 3D и анимация. Рекламные макеты для печати и цифровых каналов. Реальные работы Chiraq Concept. Беларусь и другие страны."
+	return append(base, servicePages()...)
 }
 
 // siteOrigin accepts an origin only, so canonical URLs cannot accidentally include
@@ -66,6 +82,9 @@ func siteOrigin(value string) (string, error) {
 }
 
 func requestOrigin(r *http.Request) string {
+	if productionHost(r.Host) {
+		return productionOrigin
+	}
 	scheme := "http"
 	if r.TLS != nil {
 		scheme = "https"
@@ -88,15 +107,19 @@ func structuredData(page PageData) (template.JS, error) {
 	websiteID := page.SiteURL + "/#website"
 	services := []map[string]any{
 		{"@type": "Service", "name": "Дизайн и разработка сайтов", "serviceType": "Лендинги и корпоративные сайты", "url": page.SiteURL + "/websites", "provider": map[string]string{"@id": organizationID}},
-		{"@type": "Service", "name": "Веб-сервисы под задачи бизнеса", "serviceType": "Разработка веб-приложений", "url": page.SiteURL + "/websites", "provider": map[string]string{"@id": organizationID}},
-		{"@type": "Service", "name": "Обложки и наружная реклама", "serviceType": "Графический дизайн и 3D", "url": page.SiteURL + "/design", "provider": map[string]string{"@id": organizationID}},
-		{"@type": "Service", "name": "Анимация для проектов и рекламы", "serviceType": "Моушн-дизайн", "url": page.SiteURL + "/design", "provider": map[string]string{"@id": organizationID}},
+		{"@type": "Service", "name": "Разработка программного обеспечения", "serviceType": "Разработка веб-приложений", "url": page.SiteURL + "/software", "provider": map[string]string{"@id": organizationID}},
+		{"@type": "Service", "name": "Дизайн для компании", "serviceType": "Графический дизайн и 3D", "url": page.SiteURL + "/business-design", "provider": map[string]string{"@id": organizationID}},
+		{"@type": "Service", "name": "Дизайн наружной рекламы", "serviceType": "Дизайн наружной рекламы", "url": page.SiteURL + "/outdoor-advertising", "provider": map[string]string{"@id": organizationID}},
+		{"@type": "Service", "name": "Обложки и 3D", "serviceType": "Моушн-дизайн", "url": page.SiteURL + "/design", "provider": map[string]string{"@id": organizationID}},
 	}
 	for _, service := range services {
 		service["name"] = translate(lang, service["name"].(string))
 		service["serviceType"] = translate(lang, service["serviceType"].(string))
 		service["url"] = page.SiteURL + localizedURL(lang, strings.TrimPrefix(service["url"].(string), page.SiteURL))
+		service["@id"] = service["url"].(string) + "#service"
+		service["areaServed"] = []any{map[string]string{"@type": "Country", "name": "Belarus"}, map[string]string{"@type": "Place", "name": "Worldwide"}}
 	}
+
 	offers := make([]map[string]any, 0, len(services))
 	for _, service := range services {
 		offers = append(offers, map[string]any{"@type": "Offer", "itemOffered": service})
@@ -109,6 +132,30 @@ func structuredData(page PageData) (template.JS, error) {
 			map[string]any{"@type": "WebPage", "@id": page.CanonicalURL + "#page", "url": page.CanonicalURL, "name": page.MetaTitle, "description": page.MetaDescription, "inLanguage": lang, "isPartOf": map[string]string{"@id": websiteID}, "about": map[string]string{"@id": organizationID}},
 		},
 	}
+	graph := data["@graph"].([]any)
+	organization := graph[0].(map[string]any)
+	organization["alternateName"] = []string{"Chiraq Concept", "qoncept.by"}
+	organization["areaServed"] = []any{map[string]string{"@type": "Country", "name": "Belarus"}, map[string]string{"@type": "Place", "name": "Worldwide"}}
+	organization["contactPoint"] = map[string]any{"@type": "ContactPoint", "contactType": "customer service", "email": "chiraqconcept@icloud.com", "url": contactURL, "availableLanguage": languages}
+	webPage := graph[2].(map[string]any)
+	for _, service := range services {
+		if service["url"] == page.CanonicalURL {
+			service["description"] = page.MetaDescription
+			webPage["mainEntity"] = map[string]any{"@id": service["@id"]}
+			graph = append(graph, service)
+			break
+		}
+	}
+	if page.ActivePath != "" && page.ActivePath != "/" {
+		label := page.BreadcrumbTitle
+		if label == "" {
+			label = page.MetaTitle
+		}
+		breadcrumb := map[string]any{"@type": "BreadcrumbList", "@id": page.CanonicalURL + "#breadcrumbs", "itemListElement": []any{map[string]any{"@type": "ListItem", "position": 1, "name": translate(lang, "Главная"), "item": page.SiteURL + localizedURL(lang, "/")}, map[string]any{"@type": "ListItem", "position": 2, "name": label, "item": page.CanonicalURL}}}
+		webPage["breadcrumb"] = map[string]string{"@id": page.CanonicalURL + "#breadcrumbs"}
+		graph = append(graph, breadcrumb)
+	}
+	data["@graph"] = graph
 	encoded, err := json.Marshal(data)
 	// encoding/json escapes HTML-significant characters before the result is
 	// marked as trusted script data for an application/ld+json element.
@@ -116,11 +163,18 @@ func structuredData(page PageData) (template.JS, error) {
 }
 
 type sitemapURL struct {
-	Location string `xml:"loc"`
+	Location   string             `xml:"loc"`
+	Alternates []sitemapAlternate `xml:"xhtml:link"`
+}
+type sitemapAlternate struct {
+	Rel      string `xml:"rel,attr"`
+	Language string `xml:"hreflang,attr"`
+	URL      string `xml:"href,attr"`
 }
 type sitemapDocument struct {
 	XMLName xml.Name     `xml:"urlset"`
 	XMLNS   string       `xml:"xmlns,attr"`
+	XHTML   string       `xml:"xmlns:xhtml,attr"`
 	URLs    []sitemapURL `xml:"url"`
 }
 
@@ -172,7 +226,7 @@ func newHandler(configuredSiteURL string, configuredFeatures ...*siteFeatures) (
 	if err := features.register(mux, resolveOrigin); err != nil {
 		return nil, err
 	}
-	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	mux.Handle("/static/", staticAssets(http.StripPrefix("/static/", http.FileServer(http.Dir("static")))))
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 		w.Write([]byte("ok"))
@@ -180,13 +234,18 @@ func newHandler(configuredSiteURL string, configuredFeatures ...*siteFeatures) (
 	pageList := pages()
 	mux.HandleFunc("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		fmt.Fprintf(w, "User-agent: *\nAllow: /\nDisallow: /site/\nDisallow: /api/\nDisallow: /qr\n\nSitemap: %s/sitemap.xml\n", resolveOrigin(r))
+		fmt.Fprintf(w, "User-agent: *\nAllow: /\nDisallow: /site/\nDisallow: /api/\nDisallow: /qr\nDisallow: /language\n\nSitemap: %s/sitemap.xml\n", resolveOrigin(r))
 	})
 	mux.HandleFunc("/sitemap.xml", func(w http.ResponseWriter, r *http.Request) {
-		document := sitemapDocument{XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9"}
+		document := sitemapDocument{XMLNS: "http://www.sitemaps.org/schemas/sitemap/0.9", XHTML: "http://www.w3.org/1999/xhtml"}
 		for _, page := range pageList {
 			for _, lang := range languages {
-				document.URLs = append(document.URLs, sitemapURL{Location: resolveOrigin(r) + localizedURL(lang, page.ActivePath)})
+				entry := sitemapURL{Location: resolveOrigin(r) + localizedURL(lang, page.ActivePath)}
+				for _, alternate := range languages {
+					entry.Alternates = append(entry.Alternates, sitemapAlternate{"alternate", alternate, resolveOrigin(r) + localizedURL(alternate, page.ActivePath)})
+				}
+				entry.Alternates = append(entry.Alternates, sitemapAlternate{"alternate", "x-default", resolveOrigin(r) + page.ActivePath})
+				document.URLs = append(document.URLs, entry)
 			}
 		}
 		output, err := xml.Marshal(document)
@@ -209,7 +268,14 @@ func newHandler(configuredSiteURL string, configuredFeatures ...*siteFeatures) (
 			file = "templates/service.html"
 			name = "service"
 		}
-		templates, err := localizedTemplates("templates/base.html", "templates/partials.html", "templates/media.html", "templates/contact.html", "templates/demos.html", file)
+		if page.Landing != nil {
+			file = "templates/landing.html"
+			name = "landing"
+			if page.Landing.Case == "software" {
+				page.Projects = page.Projects[1:]
+			}
+		}
+		templates, err := localizedTemplates("templates/base.html", "templates/partials.html", "templates/media.html", "templates/contact.html", "templates/demos.html", "templates/seo.html", file)
 		if err != nil {
 			return nil, fmt.Errorf("parse %s: %w", file, err)
 		}
@@ -221,6 +287,7 @@ func newHandler(configuredSiteURL string, configuredFeatures ...*siteFeatures) (
 			// The stored template data stays immutable across concurrent requests.
 			lang := languageFromRequest(r)
 			data := localizePage(page, lang)
+			data.ServiceLinks = serviceLinks(lang, page.ActivePath)
 			data.SiteURL = resolveOrigin(r)
 			data.LocaleData = localeData(lang, page.ActivePath, data.SiteURL)
 			data.CanonicalURL = data.SiteURL + localizedURL(lang, page.ActivePath)
@@ -242,7 +309,7 @@ func newHandler(configuredSiteURL string, configuredFeatures ...*siteFeatures) (
 			w.Write(output.Bytes())
 		})
 	}
-	return features.languageMiddleware(mux), nil
+	return compressResponses(features.languageMiddleware(mux)), nil
 }
 
 func main() {
@@ -254,11 +321,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	settings.SiteURL = publicSiteURL(settings.SiteURL, address)
 	features, err := featuresFromSettings(settings, address)
 	if err != nil {
 		log.Fatal(err)
 	}
-	handler, err := newHandler(os.Getenv("SITE_URL"), features)
+	handler, err := newHandler(settings.SiteURL, features)
 	if err != nil {
 		log.Fatal(err)
 	}

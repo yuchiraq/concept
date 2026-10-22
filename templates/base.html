@@ -1,6 +1,6 @@
 {{define "base"}}
 <!DOCTYPE html>
-<html lang="{{.Language}}" data-page="{{.ActivePath}}" data-theme="dark">
+<html lang="{{.Language}}" data-page="{{.ActivePath}}" data-service="{{.ContactService}}" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,11 +29,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <script src="/static/theme.js"></script>
-  <script src="/static/region.js"></script>
-  <link rel="stylesheet" href="/static/styles.css">
-  <link rel="stylesheet" href="/static/demos.css">
-  <link rel="stylesheet" href="/static/enhancements.css">
+  <script src="{{asset "/static/theme.js"}}"></script>
+  <script src="{{asset "/static/region.js"}}"></script>
+  <link rel="stylesheet" href="{{asset "/static/styles.css"}}">
+  <link rel="stylesheet" href="{{asset "/static/demos.css"}}">
+  <link rel="stylesheet" href="{{asset "/static/enhancements.css"}}">
+  <link rel="stylesheet" href="{{asset "/static/seo.css"}}">
   {{if .StructuredData}}<script type="application/ld+json">{{.StructuredData}}</script>{{end}}
 </head>
 <body class="{{.PageClass}}">
@@ -60,10 +61,10 @@
   <dialog class="lightbox" id="lightbox" aria-label="{{t "Просмотр работы"}}"><button class="dialog-close" aria-label="{{t "Закрыть"}}">×</button><button class="lightbox-prev" aria-label="{{t "Предыдущая работа"}}">{{template "arrow-left"}}</button><figure><img id="lightbox-image" alt=""><figcaption id="lightbox-caption"></figcaption></figure><button class="lightbox-next" aria-label="{{t "Следующая работа"}}">{{template "arrow-right"}}</button></dialog>
   {{template "contact-form" .}}
   {{template "language-client" .}}
-  <script src="/static/app.js" defer></script>
-  <script src="/static/demos.js" defer></script>
-  <script src="/static/motion.js" defer></script>
-  <script src="/static/contact.js" defer></script>
+  <script src="{{asset "/static/app.js"}}" defer></script>
+  <script src="{{asset "/static/demos.js"}}" defer></script>
+  <script src="{{asset "/static/motion.js"}}" defer></script>
+  <script src="{{asset "/static/contact.js"}}" defer></script>
 </body>
 </html>
 {{end}}

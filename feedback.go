@@ -18,7 +18,8 @@ import (
 )
 
 type siteSettings struct {
-	TrustedProxyHeaders bool `json:"trustedProxyHeaders"`
+	SiteURL             string `json:"siteUrl"`
+	TrustedProxyHeaders bool   `json:"trustedProxyHeaders"`
 	Telegram            struct {
 		BotToken string   `json:"botToken"`
 		ChatIDs  []string `json:"chatIds"`
@@ -56,6 +57,10 @@ func loadSiteSettings() (siteSettings, error) {
 	if value := os.Getenv("QR_STATS_PATH"); value != "" {
 		cfg.QR.StatsPath = value
 	}
+	if value := os.Getenv("SITE_URL"); value != "" {
+		cfg.SiteURL = value
+	}
+	cfg.SiteURL = strings.TrimSpace(cfg.SiteURL)
 	cfg.Telegram.BotToken = strings.TrimSpace(cfg.Telegram.BotToken)
 	chats := []string{}
 	for _, chat := range cfg.Telegram.ChatIDs {
@@ -363,7 +368,7 @@ func featuresFromSettings(cfg siteSettings, address string) (*siteFeatures, erro
 	f.adminPassword = cfg.QR.AdminPassword
 	host, _, _ := net.SplitHostPort(address)
 	ip := net.ParseIP(host)
-	f.localAdmin = os.Getenv("LOCAL_PREVIEW") == "1" && os.Getenv("SITE_URL") == "" && ip != nil && ip.IsLoopback()
+	f.localAdmin = os.Getenv("LOCAL_PREVIEW") == "1" && cfg.SiteURL == "" && ip != nil && ip.IsLoopback()
 	f.tracker = newQRTracker(cfg.QR.StatsPath)
 	if err := f.tracker.load(); err != nil {
 		return nil, fmt.Errorf("cannot load QR statistics: %w", err)

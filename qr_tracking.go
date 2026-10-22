@@ -34,8 +34,11 @@ func normalizeCampaign(value string) string {
 }
 
 type qrCampaign struct {
-	Scans uint64 `json:"scans"`
-	Leads uint64 `json:"leads"`
+	Scans       uint64 `json:"scans"`
+	Leads       uint64 `json:"leads"`
+	Destination string `json:"destination,omitempty"`
+	AddUTM      bool   `json:"addUtm,omitempty"`
+	UpdatedAt   string `json:"updatedAt,omitempty"`
 }
 type qrStatistics struct {
 	Total      uint64                `json:"total"`
@@ -159,6 +162,8 @@ func saveQRStats(path string, stats qrStatistics) error {
 type qrCampaignRow struct {
 	Name         string
 	Scans, Leads uint64
+	Destination  string
+	EditURL      string
 }
 type qrDateRow struct {
 	Date  string
@@ -172,6 +177,9 @@ type qrDashboard struct {
 	Dates                                   []qrDateRow
 	TelegramReady                           bool
 	CSRF                                    string
+	Destination, Error, Notice              string
+	AddUTM                                  bool
+	OwnerSession                            bool
 }
 
 func (f *siteFeatures) registerQR(mux *http.ServeMux, origin func(*http.Request) string) error {
@@ -189,37 +197,50 @@ func (f *siteFeatures) registerQR(mux *http.ServeMux, origin func(*http.Request)
 			return
 		}
 		campaign := normalizeCampaign(r.URL.Query().Get("campaign"))
+		target, err := qrDestination(f.tracker.snapshot().ByCampaign[campaign], campaign, origin(r))
+		if err != nil {
+			http.Error(w, translate(languageFromRequest(r), "Ссылка назначения недоступна. Свяжитесь с владельцем кода."), http.StatusServiceUnavailable)
+			return
+		}
 		if r.Method == http.MethodGet {
 			if f.tracker.record(campaign, false) != nil {
 				http.Error(w, translate(languageFromRequest(r), "Не удалось учесть переход. Попробуйте ещё раз."), 503)
 				return
 			}
 		}
-		query := url.Values{"utm_source": {"qr"}, "utm_medium": {"offline"}, "utm_campaign": {campaign}}
 		w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate")
 		w.Header().Set("X-Robots-Tag", "noindex, nofollow")
-		http.Redirect(w, r, "/?"+query.Encode(), http.StatusFound)
+		w.Header().Set("Referrer-Policy", "no-referrer")
+		http.Redirect(w, r, target, http.StatusFound)
 	})
-	mux.HandleFunc("/site/qr", f.ownerOnly(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			w.Header().Set("Allow", "GET")
-			http.Error(w, "Method not allowed", 405)
-			return
-		}
+	renderDashboard := func(w http.ResponseWriter, r *http.Request, campaign, message string, status int) {
 		stats := f.tracker.snapshot()
-		campaign := normalizeCampaign(r.URL.Query().Get("campaign"))
+		campaign = normalizeCampaign(campaign)
 		data := qrDashboard{Origin: origin(r), Campaign: campaign, TrackingURL: origin(r) + "/qr?campaign=" + url.QueryEscape(campaign), LastScan: "Переходов пока нет", Total: stats.Total, Leads: stats.Leads, Today: stats.ByDate[f.tracker.now().In(minskZone).Format("2006-01-02")], TelegramReady: f.telegram.ready()}
 		lang := languageFromRequest(r)
-		data.LocaleData = localeData(lang, "/site/qr", origin(r))
+		data.LocaleData = localeData(lang, "/site/qr?campaign="+url.QueryEscape(campaign), origin(r))
 		data.LastScan = translate(lang, data.LastScan)
-		if session, ok := f.ownerSessionFor(r); ok {
-			data.CSRF = session.CSRF
+		data.CSRF = f.qrEditToken(w, r)
+		_, data.OwnerSession = f.ownerSessionFor(r)
+		data.Destination, data.AddUTM = stats.ByCampaign[campaign].Destination, stats.ByCampaign[campaign].AddUTM
+		if data.Destination == "" {
+			data.Destination = origin(r) + "/"
+		}
+		if message != "" {
+			data.Error = translate(lang, message)
+			data.Destination, data.AddUTM = r.PostForm.Get("destination"), r.PostForm.Get("add_utm") == "1"
+		} else if r.URL.Query().Get("saved") == "1" {
+			data.Notice = translate(lang, "Ссылка сохранена. Ранее напечатанные коды уже ведут на новый адрес.")
 		}
 		if when, err := time.Parse(time.RFC3339, stats.LastScanAt); err == nil {
 			data.LastScan = when.In(minskZone).Format("02.01.2006 15:04")
 		}
 		for name, c := range stats.ByCampaign {
-			data.Campaigns = append(data.Campaigns, qrCampaignRow{name, c.Scans, c.Leads})
+			destination := c.Destination
+			if destination == "" {
+				destination = origin(r) + "/"
+			}
+			data.Campaigns = append(data.Campaigns, qrCampaignRow{Name: name, Scans: c.Scans, Leads: c.Leads, Destination: destination, EditURL: "/site/qr?campaign=" + url.QueryEscape(name)})
 		}
 		sort.Slice(data.Campaigns, func(i, j int) bool {
 			if data.Campaigns[i].Scans == data.Campaigns[j].Scans {
@@ -240,7 +261,49 @@ func (f *siteFeatures) registerQR(mux *http.ServeMux, origin func(*http.Request)
 			return
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Referrer-Policy", "same-origin")
+		w.Header().Set("X-Frame-Options", "DENY")
+		w.WriteHeader(status)
 		w.Write(output.Bytes())
+	}
+	mux.HandleFunc("/site/qr", f.ownerOnly(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			w.Header().Set("Allow", "GET")
+			http.Error(w, "Method not allowed", 405)
+			return
+		}
+		renderDashboard(w, r, r.URL.Query().Get("campaign"), "", http.StatusOK)
+	}))
+	mux.HandleFunc("/site/qr/save", f.ownerOnly(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			w.Header().Set("Allow", "POST")
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+		r.Body = http.MaxBytesReader(w, r.Body, 8192)
+		if r.ParseForm() != nil {
+			http.Error(w, translate(languageFromRequest(r), "Некорректный запрос"), http.StatusBadRequest)
+			return
+		}
+		if !f.validQREdit(r, origin(r)) {
+			http.Error(w, translate(languageFromRequest(r), "Обновите страницу и повторите попытку"), http.StatusForbidden)
+			return
+		}
+		campaign := normalizeCampaign(r.PostForm.Get("campaign"))
+		if raw := r.PostForm.Get("campaign"); raw != campaign {
+			renderDashboard(w, r, campaign, "Метка кампании: до 64 латинских букв, цифр, дефисов и подчёркиваний.", http.StatusUnprocessableEntity)
+			return
+		}
+		destination, err := validateQRDestination(r.PostForm.Get("destination"), origin(r), r.Host)
+		if err != nil {
+			renderDashboard(w, r, campaign, err.Error(), http.StatusUnprocessableEntity)
+			return
+		}
+		if err := f.tracker.saveDestination(campaign, destination, r.PostForm.Get("add_utm") == "1"); err != nil {
+			renderDashboard(w, r, campaign, "Не удалось сохранить ссылку. Повторите попытку.", http.StatusServiceUnavailable)
+			return
+		}
+		http.Redirect(w, r, "/site/qr?"+url.Values{"campaign": {campaign}, "saved": {"1"}}.Encode(), http.StatusSeeOther)
 	}))
 	mux.HandleFunc("/site/qr/code.png", f.ownerOnly(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {

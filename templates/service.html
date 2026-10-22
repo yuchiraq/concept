@@ -1,6 +1,6 @@
 {{define "service"}}{{template "base" .}}{{end}}
 {{define "content"}}
-<section class="service-hero section"><p class="eyebrow reveal">{{.Eyebrow}}</p><h1 class="reveal">{{.HeroTitle}}</h1><div class="service-hero-bottom"><p>{{.HeroText}}</p><a class="button button-primary magnetic" href="#contacts" data-open-contact><span>{{if eq .ActivePath "/design"}}{{t "Обсудить дизайн"}}{{else}}{{t "Получить оценку проекта"}}{{end}}</span><span>{{template "arrow-up-right"}}</span></a></div><p class="service-assurance">{{t "Состав работ, сроки и стоимость согласуем до начала. Оплата удобным для вас способом."}}</p></section>
+<section class="service-hero section">{{template "breadcrumbs" .}}<p class="eyebrow reveal">{{.Eyebrow}}</p><h1 class="reveal">{{.HeroTitle}}</h1><div class="service-hero-bottom"><p>{{.HeroText}}</p><a class="button button-primary magnetic" href="#contacts" data-open-contact><span>{{if eq .ActivePath "/design"}}{{t "Обсудить дизайн"}}{{else}}{{t "Получить оценку проекта"}}{{end}}</span><span>{{template "arrow-up-right"}}</span></a></div><p class="service-assurance">{{t "Состав работ, сроки и стоимость согласуем до начала. Оплата удобным для вас способом."}}</p></section>
 {{if eq .ActivePath "/websites"}}
 <section class="section service-work" id="selected-work"><div class="section-heading"><p class="eyebrow">{{t "Реальные задачи и готовые решения"}}</p><span class="muted">{{t "Дизайн + разработка"}}</span></div>{{template "web-projects" .}}</section>
 <section class="section ownership-section">
@@ -13,6 +13,7 @@
 {{template "media-showcase" .}}
 <section class="section approach"><p class="eyebrow">{{t "Дизайн для разных задач"}}</p><h2>{{t "Один образ."}}<br><span class="muted">{{t "Нужные вам форматы."}}</span></h2><div class="offer-grid"><article><span>{{t "01 / Музыка"}}</span><h3>{{t "Обложки релизов"}}</h3><p>{{t "Сингл, EP или альбом. Композиция, типографика и атмосфера, которые передают характер музыки."}}</p></article><article><span>{{t "02 / Движение"}}</span><h3>{{t "3D и анимация"}}</h3><p>{{t "Авторские сцены и анимированные визуалы для релизов, рекламы и социальных сетей."}}</p></article><article><span>{{t "03 / Реклама"}}</span><h3>{{t "Афиши и наружные носители"}}</h3><p>{{t "Макеты, которые работают в реальной среде. Подготовка к печати и адаптация под нужные размеры."}}</p></article></div></section>
 {{end}}
+{{template "service-links" .}}
 {{template "process" .}}
 {{template "faq" .}}
 {{end}}

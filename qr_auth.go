@@ -53,7 +53,7 @@ func (f *siteFeatures) ownerSessionFor(r *http.Request) (ownerSession, bool) {
 	return session, true
 }
 func (f *siteFeatures) secureOwnerCookie(r *http.Request) bool {
-	return r.TLS != nil || strings.HasPrefix(f.publicOrigin, "https://")
+	return r.TLS != nil || strings.HasPrefix(f.publicOrigin, "https://") || productionHost(r.Host)
 }
 func (f *siteFeatures) setOwnerCookie(w http.ResponseWriter, r *http.Request, name, value string, age int) {
 	http.SetCookie(w, &http.Cookie{Name: name, Value: value, Path: "/site/qr", MaxAge: age, HttpOnly: true, Secure: f.secureOwnerCookie(r), SameSite: http.SameSiteStrictMode})

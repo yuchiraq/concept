@@ -112,13 +112,13 @@ func TestPagesRenderSEOAndProjectLinks(t *testing.T) {
 			if err := json.Unmarshal([]byte(match[1]), &data); err != nil {
 				t.Fatalf("JSON-LD is invalid: %v", err)
 			}
-			if data.Context != "https://schema.org" || len(data.Graph) != 3 {
+			if data.Context != "https://schema.org" || len(data.Graph) < 3 {
 				t.Fatalf("unexpected JSON-LD graph: %#v", data)
 			}
 			if data.Graph[2]["url"] != "https://qoncept.example"+page.ActivePath {
 				t.Error("WebPage URL does not match canonical URL")
 			}
-			if page.ActivePath != "/design" {
+			if page.ActivePath == "/" || page.ActivePath == "/websites" {
 				for _, want := range []string{"WorkService", "Обсудить свой сервис", `href="https://avayusstroi.by/"`} {
 					if !strings.Contains(body, want) {
 						t.Errorf("project section missing %q", want)

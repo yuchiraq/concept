@@ -168,10 +168,24 @@ func TestTranslationCatalogCoverage(t *testing.T) {
 	for _, key := range clientTranslationKeys {
 		keys[key] = true
 	}
+	for _, link := range serviceLinks("ru", "") {
+		keys[link.Title], keys[link.Text] = true, true
+	}
 	for _, page := range pages() {
-		for _, key := range []string{page.MetaTitle, page.MetaDescription, page.HeroText, page.HeroTitle, page.Eyebrow} {
+		for _, key := range []string{page.MetaTitle, page.MetaDescription, page.HeroText, page.HeroTitle, page.Eyebrow, page.BreadcrumbTitle} {
 			if key != "" {
 				keys[key] = true
+			}
+		}
+		if landing := page.Landing; landing != nil {
+			for _, key := range append([]string{landing.Name, landing.IntroTitle, landing.IntroText, landing.DeliverablesTitle}, landing.Deliverables...) {
+				keys[key] = true
+			}
+			for _, offer := range landing.Offers {
+				keys[offer.Title], keys[offer.Text] = true, true
+			}
+			for _, faq := range landing.FAQ {
+				keys[faq.Question], keys[faq.Answer] = true, true
 			}
 		}
 	}

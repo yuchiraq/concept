@@ -183,7 +183,7 @@ func localizedTemplates(files ...string) (map[string]*template.Template, error) 
 	files = append(files, "templates/language.html")
 	for _, code := range languages {
 		lang := code
-		tmpl, err := template.New("localized").Funcs(template.FuncMap{"t": func(text string) string { return translate(lang, text) }, "url": func(path string) string { return localizedURL(lang, path) }}).ParseFiles(files...)
+		tmpl, err := template.New("localized").Funcs(template.FuncMap{"asset": assetURL, "t": func(text string) string { return translate(lang, text) }, "url": func(path string) string { return localizedURL(lang, path) }}).ParseFiles(files...)
 		if err != nil {
 			return nil, err
 		}
@@ -192,6 +192,8 @@ func localizedTemplates(files ...string) (map[string]*template.Template, error) 
 	return result, nil
 }
 func localizePage(page PageData, lang string) PageData {
+	page.Landing = localizeLanding(page.Landing, lang)
+	page.BreadcrumbTitle = translate(lang, page.BreadcrumbTitle)
 	page.MetaTitle = translate(lang, page.MetaTitle)
 	page.MetaDescription = translate(lang, page.MetaDescription)
 	page.Eyebrow = translate(lang, page.Eyebrow)
@@ -226,6 +228,7 @@ func (f *siteFeatures) languageMiddleware(next http.Handler) http.Handler {
 			return
 		}
 		if r.URL.Path == "/language" {
+			w.Header().Set("X-Robots-Tag", "noindex, nofollow")
 			if r.Method != http.MethodGet {
 				w.Header().Set("Allow", "GET")
 				http.Error(w, "Method not allowed", 405)
@@ -252,7 +255,7 @@ func (f *siteFeatures) languageMiddleware(next http.Handler) http.Handler {
 			if lang != "auto" && !strings.HasPrefix(path, "/site/") {
 				path = localizedURL(lang, path)
 			}
-			cookie := &http.Cookie{Name: "qoncept_language", Value: lang, Path: "/", MaxAge: 365 * 24 * 3600, HttpOnly: true, SameSite: http.SameSiteLaxMode, Secure: r.TLS != nil || strings.HasPrefix(f.publicOrigin, "https://")}
+			cookie := &http.Cookie{Name: "qoncept_language", Value: lang, Path: "/", MaxAge: 365 * 24 * 3600, HttpOnly: true, SameSite: http.SameSiteLaxMode, Secure: f.secureOwnerCookie(r)}
 			if lang == "auto" {
 				cookie.Value = ""
 				cookie.MaxAge = -1
@@ -273,14 +276,14 @@ func (f *siteFeatures) languageMiddleware(next http.Handler) http.Handler {
 			lang = f.automaticLanguage(r)
 			w.Header().Set("Cache-Control", "private, no-store")
 		}
-		public := r.URL.Path == "/" || r.URL.Path == "/websites" || r.URL.Path == "/design"
+		public := publicPagePath(r.URL.Path)
 		if public && !explicit && (r.Method == http.MethodGet || r.Method == http.MethodHead) {
 			manual, manualErr := r.Cookie("qoncept_language")
 			_, hintErr := r.Cookie("qoncept_region")
 			host, _, _ := net.SplitHostPort(r.RemoteAddr)
 			trustedCountry := f.trustedProxyHeaders && net.ParseIP(host).IsLoopback() && (countryLanguage(r.Header.Get("CF-IPCountry")) != "" || countryLanguage(r.Header.Get("X-Country-Code")) != "")
 			if (manualErr != nil || !validLanguage(manual.Value)) && hintErr != nil && !trustedCountry {
-				http.SetCookie(w, &http.Cookie{Name: "qoncept_region_probe", Value: url.QueryEscape(localizedURL(lang, r.URL.Path)), Path: "/", MaxAge: 60, SameSite: http.SameSiteLaxMode, Secure: r.TLS != nil || strings.HasPrefix(f.publicOrigin, "https://")})
+				http.SetCookie(w, &http.Cookie{Name: "qoncept_region_probe", Value: url.QueryEscape(localizedURL(lang, r.URL.Path)), Path: "/", MaxAge: 60, SameSite: http.SameSiteLaxMode, Secure: f.secureOwnerCookie(r)})
 			}
 		}
 		if public && !explicit && lang != "ru" && (r.Method == http.MethodGet || r.Method == http.MethodHead) {

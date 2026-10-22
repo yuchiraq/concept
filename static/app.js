@@ -131,43 +131,93 @@
   setCollapsed(false);
  }
 
- const videos = Array.from(document.querySelectorAll('video'));
+ const videos = Array.from(document.querySelectorAll('video[data-motion-preview]'));
  if (videos.length) {
   const visibility = new Map();
+  const attempts = new WeakMap();
+  const connection = navigator.connection;
+  const motionAllowed = () => !reducedMotion.matches && !connection?.saveData;
+  const setPlaying = (video, playing) => video.closest('.motion-preview-media')?.classList.toggle('is-playing', playing);
+  const prepareVideo = video => {
+   if (!motionAllowed() || video.dataset.mediaLoaded) return;
+   video.querySelectorAll('source[data-src]').forEach(source => {
+    source.src = source.dataset.src;
+    source.removeAttribute('data-src');
+   });
+   video.dataset.mediaLoaded = 'true';
+   video.load();
+  };
   const syncPreview = video => {
-   if (!video.hasAttribute('data-motion-preview')) return;
-   if (visibility.get(video) && !reducedMotion.matches && !document.hidden) video.play()?.catch(() => {});
-   else video.pause();
+   video.autoplay = motionAllowed();
+   if (!visibility.get(video) || !motionAllowed() || document.hidden) {
+    // A paused, pending play() is aborted by the browser. Forget that attempt
+    // immediately so a fast scroll back can start a fresh one before it settles.
+    attempts.delete(video);
+    video.pause();
+    setPlaying(video, false);
+    return;
+   }
+   prepareVideo(video);
+   if (attempts.has(video) || !video.paused) return;
+   // Invoke play directly in gesture handlers too: Safari may require a real tap
+   // in Low Power Mode. Keep the ordinary poster until a frame is playing.
+   const result = video.play();
+   if (result?.then) {
+    attempts.set(video, result);
+    result.catch(() => {
+     if (attempts.get(video) === result) setPlaying(video, false);
+    }).finally(() => {
+     if (attempts.get(video) === result) attempts.delete(video);
+    });
+   }
   };
   videos.forEach(video => {
+   video.controls = false;
    video.playsInline = true;
-   if (video.hasAttribute('data-motion-preview')) {
-    video.controls = false;
-    video.autoplay = !reducedMotion.matches;
-    video.muted = true;
-    video.defaultMuted = true;
-    video.loop = true;
-    video.disablePictureInPicture = true;
-    video.disableRemotePlayback = true;
-    video.tabIndex = -1;
-   }
+   video.setAttribute('playsinline', '');
+   video.setAttribute('webkit-playsinline', '');
+   video.muted = true;
+   video.defaultMuted = true;
+   video.setAttribute('muted', '');
+   video.autoplay = motionAllowed();
+   video.loop = true;
+   video.disablePictureInPicture = true;
+   video.disableRemotePlayback = true;
+   video.tabIndex = -1;
+   video.addEventListener('playing', () => {
+    if (visibility.get(video) && motionAllowed() && !document.hidden) setPlaying(video, true);
+    else { video.pause(); setPlaying(video, false); }
+   });
+   ['pause', 'ended', 'error', 'emptied'].forEach(event => video.addEventListener(event, () => setPlaying(video, false)));
+   video.addEventListener('loadeddata', () => syncPreview(video));
+   video.addEventListener('canplay', () => syncPreview(video));
   });
   if ('IntersectionObserver' in window) {
+   // No source URL is assigned before a preview approaches the viewport. This
+   // avoids downloading all portfolio videos during the first mobile paint.
+   const loadObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+    if (entry.isIntersecting && motionAllowed()) {
+     prepareVideo(entry.target);
+     loadObserver.unobserve(entry.target);
+    }
+   }), { rootMargin: '180px 0px' });
    const videoObserver = new IntersectionObserver(entries => entries.forEach(entry => {
     const visible = entry.isIntersecting && entry.intersectionRatio >= .15;
     visibility.set(entry.target, visible);
-    if (!visible) entry.target.pause();
     syncPreview(entry.target);
    }), { threshold: [0, .15] });
-   videos.forEach(video => videoObserver.observe(video));
+   videos.forEach(video => { loadObserver.observe(video); videoObserver.observe(video); });
   } else videos.forEach(video => { visibility.set(video, true); syncPreview(video); });
-  onMediaChange(reducedMotion, () => videos.forEach(syncPreview));
-  document.addEventListener('visibilitychange', () => videos.forEach(video => {
-   if (document.hidden) video.pause();
-   else syncPreview(video);
-  }));
-  // A normal page tap can also resume muted animation if Safari blocked autoplay.
-  document.addEventListener('pointerup', () => videos.forEach(syncPreview), { passive: true });
+  const syncVideos = () => videos.forEach(syncPreview);
+  onMediaChange(reducedMotion, syncVideos);
+  connection?.addEventListener?.('change', syncVideos);
+  document.addEventListener('visibilitychange', syncVideos);
+  window.addEventListener('pageshow', syncVideos);
+  window.addEventListener('focus', syncVideos);
+  // These are genuine WebKit user-activation events. No synthetic click can
+  // bypass the user's device policy; denied autoplay keeps the cover visible.
+  ['touchend', 'click'].forEach(event => document.addEventListener(event, syncVideos, { passive: true }));
+  document.addEventListener('keydown', event => { if (!event.repeat) syncVideos(); });
  }
 
  document.querySelectorAll('dialog').forEach(dialog => {

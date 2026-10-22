@@ -45,7 +45,7 @@
  function openForm(trigger) {
   source = trigger.textContent.trim().replace(/\s+/g,' ').slice(0,120);
   const page = document.documentElement.dataset.page || location.pathname;
-  const service = trigger.dataset.service || (page === '/design' ? 'design' : page === '/websites' ? 'website' : 'unsure');
+  const service = trigger.dataset.service || document.documentElement.dataset.service || (page === '/design' ? 'design' : page === '/websites' ? 'website' : 'unsure');
   form.elements.service.value = service;
   if (form.hidden) { form.hidden = false; success.hidden = true; }
   if (!form.dataset.sending) { status.hidden = true; status.textContent = ''; }
