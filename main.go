@@ -127,7 +127,7 @@ func structuredData(page PageData) (template.JS, error) {
 	data := map[string]any{
 		"@context": "https://schema.org",
 		"@graph": []any{
-			map[string]any{"@type": "Organization", "@id": organizationID, "name": "by Qoncept", "alternateName": "Chiraq Concept", "url": page.SiteURL + "/", "image": page.OGImage, "email": "chiraqconcept@icloud.com", "sameAs": []string{contactURL, "https://instagram.com/chiraqconcept162"}, "hasOfferCatalog": map[string]any{"@type": "OfferCatalog", "name": translate(lang, "Дизайн и разработка"), "itemListElement": offers}},
+			map[string]any{"@type": "Organization", "@id": organizationID, "name": "by Qoncept", "alternateName": "Chiraq Concept", "url": page.SiteURL + "/", "image": page.OGImage, "email": "chiraqconcept@icloud.com", "sameAs": []string{contactURL, "https://instagram.com/qoncept.by"}, "hasOfferCatalog": map[string]any{"@type": "OfferCatalog", "name": translate(lang, "Дизайн и разработка"), "itemListElement": offers}},
 			map[string]any{"@type": "WebSite", "@id": websiteID, "name": "by Qoncept", "url": page.SiteURL + localizedURL(lang, "/"), "inLanguage": lang, "publisher": map[string]string{"@id": organizationID}},
 			map[string]any{"@type": "WebPage", "@id": page.CanonicalURL + "#page", "url": page.CanonicalURL, "name": page.MetaTitle, "description": page.MetaDescription, "inLanguage": lang, "isPartOf": map[string]string{"@id": websiteID}, "about": map[string]string{"@id": organizationID}},
 		},

@@ -107,7 +107,7 @@ func TestSitemapLanguageAlternates(t *testing.T) {
 func TestInternationalCopyKeepsRegionalSearchMetadata(t *testing.T) {
 	handler := testHandler(t, productionOrigin)
 	bodyPattern := regexp.MustCompile(`(?s)<body\b[^>]*>(.*?)</body>`)
-	geography := regexp.MustCompile(`(?i)\b(?:Belarus|Brest)\b|Беларус[ьиі]\b|Білорус[ьі]\b|Брест[ае]?\b|Брэст[ае]?\b`)
+	geography := regexp.MustCompile(`(?i)\b(?:Belarus|Brest)\b|(?:Беларус[ьиі]|Білорус[ьі]|Брест[ае]?|Брэст[ае]?)(?:[^\p{L}]|$)`)
 	for _, page := range pages() {
 		for _, lang := range languages {
 			address := productionOrigin + localizedURL(lang, page.ActivePath)
