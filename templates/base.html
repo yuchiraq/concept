@@ -4,10 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>{{.MetaTitle}}</title>
   <meta name="description" content="{{.MetaDescription}}">
   <meta name="robots" content="{{if eq .PageClass "page-not-found"}}noindex, follow{{else}}index, follow, max-image-preview:large, max-video-preview:-1{{end}}">
   <meta name="author" content="by Qoncept / Chiraq Concept">
+  <meta name="yandex-verification" content="4abc4bee356feb4a">
   <meta name="theme-color" content="#101112">
   <link rel="canonical" href="{{.CanonicalURL}}">
   {{range .Alternates}}<link rel="alternate" hreflang="{{.Code}}" href="{{.URL}}">{{end}}
@@ -61,6 +63,7 @@
   <dialog class="lightbox" id="lightbox" aria-label="{{t "Просмотр работы"}}"><button class="dialog-close" aria-label="{{t "Закрыть"}}">×</button><button class="lightbox-prev" aria-label="{{t "Предыдущая работа"}}">{{template "arrow-left"}}</button><figure><img id="lightbox-image" alt=""><figcaption id="lightbox-caption"></figcaption></figure><button class="lightbox-next" aria-label="{{t "Следующая работа"}}">{{template "arrow-right"}}</button></dialog>
   {{template "contact-form" .}}
   {{template "language-client" .}}
+  <script src="{{asset "/static/analytics.js"}}" data-counter-id="113798986" defer></script>
   <script src="{{asset "/static/app.js"}}" defer></script>
   <script src="{{asset "/static/demos.js"}}" defer></script>
   <script src="{{asset "/static/motion.js"}}" defer></script>

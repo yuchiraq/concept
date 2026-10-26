@@ -103,3 +103,28 @@ func TestSitemapLanguageAlternates(t *testing.T) {
 		t.Fatalf("sitemap locations=%d alternates=%d", locations, alternates)
 	}
 }
+
+func TestInternationalCopyKeepsRegionalSearchMetadata(t *testing.T) {
+	handler := testHandler(t, productionOrigin)
+	bodyPattern := regexp.MustCompile(`(?s)<body\b[^>]*>(.*?)</body>`)
+	geography := regexp.MustCompile(`(?i)\b(?:Belarus|Brest)\b|Беларус[ьиі]\b|Білорус[ьі]\b|Брест[ае]?\b|Брэст[ае]?\b`)
+	for _, page := range pages() {
+		for _, lang := range languages {
+			address := productionOrigin + localizedURL(lang, page.ActivePath)
+			html := getPage(t, handler, address).Body.String()
+			body := bodyPattern.FindStringSubmatch(html)
+			if len(body) != 2 {
+				t.Fatalf("%s body missing", address)
+			}
+			if match := geography.FindString(body[1]); match != "" {
+				t.Errorf("%s has visible geographical restriction: %q", address, match)
+			}
+			if lang == "ru" && (!strings.Contains(html, "Брест") || !strings.Contains(html, "Беларус")) {
+				t.Errorf("%s lost regional search metadata", address)
+			}
+			if !strings.Contains(html, `"@type":"City","containedInPlace":{"@type":"Country","name":"Belarus"},"name":"Brest"`) {
+				t.Errorf("%s lost accurate service geography", address)
+			}
+		}
+	}
+}

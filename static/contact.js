@@ -50,7 +50,10 @@
   if (form.hidden) { form.hidden = false; success.hidden = true; }
   if (!form.dataset.sending) { status.hidden = true; status.textContent = ''; }
   document.querySelector('#project-dialog[open]')?.close();
-  if (!dialog.open) dialog.showModal();
+  if (!dialog.open) {
+   dialog.showModal();
+   window.qonceptAnalytics?.goal('lead_form_open');
+  }
   form.elements.name.focus({preventScroll:true});
  }
  document.addEventListener('click',event => {
@@ -87,6 +90,7 @@
    if (!response.ok || result.success !== true) {
     const error = new Error('delivery'); error.code = result.error; throw error;
    }
+   window.qonceptAnalytics?.goal('lead_submit_success');
    form.reset(); updateChannel(); form.hidden = true; success.hidden = false; success.focus({preventScroll:true});
   } catch (error) {
    status.textContent = error.code === 'rate_limit' ? tr('Слишком много попыток. Попробуйте позже или воспользуйтесь кнопкой «Мои контакты».') : error.code === 'invalid_fields' ? tr('Проверьте имя и контакт, затем попробуйте ещё раз.') : tr('Заявка не отправлена. Попробуйте ещё раз или напишите мне напрямую: кнопка «Мои контакты» находится рядом с формой.');

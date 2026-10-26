@@ -57,16 +57,16 @@ func pages() []PageData {
 		{ActivePath: "/design", PageClass: "page-design", MetaTitle: "Обложки, наружная реклама и анимация — Chiraq Concept", MetaDescription: "Дизайн обложек, 3D-арт, наружная реклама и анимация от Chiraq Concept / by Qoncept. Авторские работы и реальные примеры. Обсудим визуал для вашего проекта.", Eyebrow: "Chiraq Concept / Дизайн и анимация", HeroTitle: "Визуал, который привлекает внимание.", HeroText: "Обложки релизов, наружная реклама, 3D и анимация для вашего проекта. Разработаю образ и подготовлю материалы под нужные форматы: от экрана до печати."},
 	}
 	base[0].ContactService = "unsure"
-	base[0].MetaTitle = "Создание сайтов и разработка программ в Беларуси — by Qoncept"
-	base[0].MetaDescription = "Сайты для бизнеса, программы на заказ и автоматизация. Дизайн для компаний и макеты наружной рекламы. Беларусь и удалённо за рубежом. Оценка проекта."
+	base[0].MetaTitle = "Создание сайтов, программы и дизайн на заказ — by Qoncept"
+	base[0].MetaDescription = "Сайты для бизнеса, программы на заказ и дизайн. Автоматизация, обложки и макеты рекламы. Работа с клиентами из Беларуси, Бреста и других стран."
 	base[1].ContactService, base[1].BreadcrumbTitle = "website", "Создание сайтов"
-	base[1].MetaTitle = "Создание сайтов в Беларуси — разработка под ключ | by Qoncept"
-	base[1].MetaDescription = "Разработка сайтов для бизнеса в Беларуси: лендинги и корпоративные сайты, дизайн, мобильная версия и формы заявок. Обсудим стоимость и сроки."
-	base[1].HeroTitle = "Создание сайтов для бизнеса в Беларуси."
-	base[1].HeroText = "Разрабатываю лендинги и корпоративные сайты: структура, дизайн, адаптация для телефона, формы заявок и подготовка к поисковому продвижению. Работаю с клиентами в Беларуси и удалённо в других странах."
+	base[1].MetaTitle = "Создание сайтов под ключ — дизайн и разработка | by Qoncept"
+	base[1].MetaDescription = "Создание лендингов и корпоративных сайтов: дизайн, мобильная версия, формы заявок и запуск. Беларусь, Брест и удалённая работа с другими странами."
+	base[1].HeroTitle = "Создание сайтов для бизнеса."
+	base[1].HeroText = "Разрабатываю лендинги и корпоративные сайты: структура, дизайн, адаптация для телефона, формы заявок и подготовка к поисковому продвижению. Работаю удалённо с клиентами из разных стран."
 	base[2].ContactService, base[2].BreadcrumbTitle = "design", "Дизайн и обложки"
 	base[2].MetaTitle = "Дизайн для бизнеса, обложки и наружная реклама — by Qoncept"
-	base[2].MetaDescription = "Дизайн для компаний, обложки, 3D и анимация. Рекламные макеты для печати и цифровых каналов. Реальные работы Chiraq Concept. Беларусь и другие страны."
+	base[2].MetaDescription = "Обложки релизов, 3D, анимация и рекламная графика. Реальные работы Chiraq Concept. Заказы из Беларуси, Бреста и других стран."
 	return append(base, servicePages()...)
 }
 
@@ -117,7 +117,7 @@ func structuredData(page PageData) (template.JS, error) {
 		service["serviceType"] = translate(lang, service["serviceType"].(string))
 		service["url"] = page.SiteURL + localizedURL(lang, strings.TrimPrefix(service["url"].(string), page.SiteURL))
 		service["@id"] = service["url"].(string) + "#service"
-		service["areaServed"] = []any{map[string]string{"@type": "Country", "name": "Belarus"}, map[string]string{"@type": "Place", "name": "Worldwide"}}
+		service["areaServed"] = []any{map[string]string{"@type": "Country", "name": "Belarus"}, map[string]any{"@type": "City", "name": "Brest", "containedInPlace": map[string]string{"@type": "Country", "name": "Belarus"}}, map[string]string{"@type": "Place", "name": "Worldwide"}}
 	}
 
 	offers := make([]map[string]any, 0, len(services))
@@ -135,7 +135,7 @@ func structuredData(page PageData) (template.JS, error) {
 	graph := data["@graph"].([]any)
 	organization := graph[0].(map[string]any)
 	organization["alternateName"] = []string{"Chiraq Concept", "qoncept.by"}
-	organization["areaServed"] = []any{map[string]string{"@type": "Country", "name": "Belarus"}, map[string]string{"@type": "Place", "name": "Worldwide"}}
+	organization["areaServed"] = []any{map[string]string{"@type": "Country", "name": "Belarus"}, map[string]any{"@type": "City", "name": "Brest", "containedInPlace": map[string]string{"@type": "Country", "name": "Belarus"}}, map[string]string{"@type": "Place", "name": "Worldwide"}}
 	organization["contactPoint"] = map[string]any{"@type": "ContactPoint", "contactType": "customer service", "email": "chiraqconcept@icloud.com", "url": contactURL, "availableLanguage": languages}
 	webPage := graph[2].(map[string]any)
 	for _, service := range services {
